@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Scoutr</string>
+    <string name="title_activity_home__page__map_">Scoutr</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="Scoutr_button">Scoutr.</string>
+    <string name="title_activity_camera">Camera</string>
+</resources>
