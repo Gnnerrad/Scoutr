@@ -1,5 +1,7 @@
 package com.example.darre_000.scoutr;
 
+//This is a comment
+
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,7 +15,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -128,13 +129,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
-
     //Map Stuff
     public void onMapReady(GoogleMap googleMap) {
-    }
 
-    public void recieveCurrentImageLocation(Uri imageUri){
-        Toast.makeText(MainActivity.this, imageUri.toString(), Toast.LENGTH_LONG).show();
     }
 
     protected void addMarkerForPicture(Uri imageUri) {
@@ -146,11 +143,10 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
             mMap.moveCamera(CameraUpdateFactory.zoomIn());
             Marker marker = mMap.addMarker(new MarkerOptions()
-
+                            .title("King Charles")
                             .position(currentLocation)
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin))
             );
-
             marker.showInfoWindow();
         }
 //End Map Stuff
