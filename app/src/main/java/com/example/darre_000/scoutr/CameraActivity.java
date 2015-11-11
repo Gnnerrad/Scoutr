@@ -17,7 +17,7 @@ import android.widget.ImageView;
 import java.io.File;
 import java.io.FileOutputStream;
 
-class Camera_Activity extends AppCompatActivity {
+public class CameraActivity extends AppCompatActivity {
 
     private  static  String logTrack = "CameraAppLog";
     private static int PICTURE_TAKE = 1;

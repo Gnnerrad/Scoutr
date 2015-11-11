@@ -1,8 +1,6 @@
 package com.example.darre_000.scoutr;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -27,8 +25,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -61,15 +57,10 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 TextView tvLng = (TextView) v.findViewById(R.id.InfoWindowSnippet);
                 ImageView locationPhoto = (ImageView) v.findViewById(R.id.locationPhoto);
 
-                        //setImageURI(Uri.fromFile(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)));
                 tvLat.setText("Latitude:" + latLng.latitude);
                 tvLng.setText("Longitude:"+ latLng.longitude);
                 return v;
             }
-
-//            public void setLocationPhoto(Uri photoUri){
-//                locationPhoto.setImageURI(photoUri);
-//            }
         });
         mapFragment.getMapAsync(this);
 
@@ -121,14 +112,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
 //End Bottom Bar
 
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_camera);
-//        Button cameraButton  = (Button)findViewById(R.id.button_camera);
-//        cameraButton.setOnClickListener(camListener);
-//    }
-
     private View.OnClickListener camListener =  new View.OnClickListener(){
         public void onClick(View v){
             takeLocationPhoto(v);
@@ -172,20 +155,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         }
 //End Map Stuff
 
-    }
-
-    private void loadImageFromStorage(String path)
-    {
-        try {
-            File f=new File(path, "profile.jpg");
-            Bitmap b = BitmapFactory.decodeStream(new FileInputStream(f));
-            ImageView img=(ImageView)findViewById(R.id.locationPhoto);
-            img.setImageBitmap(b);
-        }
-        catch (FileNotFoundException e)
-        {
-            e.printStackTrace();
-        }
     }
 }
 
