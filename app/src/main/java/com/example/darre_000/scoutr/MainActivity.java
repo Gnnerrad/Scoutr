@@ -1,6 +1,8 @@
 package com.example.darre_000.scoutr;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -10,22 +12,29 @@ import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.SearchView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private GPSTracker gps;
-    private static int PICTURE_TAKE = 1;
+    private static int PICTURE_TAKE = 0;
     private Uri imageUri;
 
     @Override
@@ -35,8 +44,34 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        mMap=mapFragment.getMap();
+        mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+            //taken from http://stackoverflow.com/questions/15090148/custom-info-window-adapter-with-custom-data-in-map-v2
 
+            @Override
+            public View getInfoWindow(Marker marker) {
+                return null;
+            }
+
+            @Override
+            public View getInfoContents(Marker marker) {
+                View v = getLayoutInflater().inflate(R.layout.custom_info_window, null);
+                LatLng latLng = marker.getPosition();
+                TextView tvLat = (TextView) v.findViewById(R.id.infoWindowTitle);
+                TextView tvLng = (TextView) v.findViewById(R.id.InfoWindowSnippet);
+                ImageView locationPhoto = (ImageView) v.findViewById(R.id.locationPhoto);
+
+                        //setImageURI(Uri.fromFile(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)));
+                tvLat.setText("Latitude:" + latLng.latitude);
+                tvLng.setText("Longitude:"+ latLng.longitude);
+                return v;
+            }
+
+//            public void setLocationPhoto(Uri photoUri){
+//                locationPhoto.setImageURI(photoUri);
+//            }
+        });
+        mapFragment.getMapAsync(this);
 
 
 //Top Bar Stuff
@@ -86,6 +121,14 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
 //End Bottom Bar
 
+//    @Override
+//    protected void onCreate(Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//        setContentView(R.layout.activity_camera);
+//        Button cameraButton  = (Button)findViewById(R.id.button_camera);
+//        cameraButton.setOnClickListener(camListener);
+//    }
+
     private View.OnClickListener camListener =  new View.OnClickListener(){
         public void onClick(View v){
             takeLocationPhoto(v);
@@ -98,23 +141,51 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         imageUri = Uri.fromFile(photo);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
         startActivityForResult(intent, PICTURE_TAKE);
-
+        addMarkerForPicture(imageUri);
     }
 
 
-//Map Stuff
-public void onMapReady(GoogleMap googleMap) {
-    mMap = googleMap;
-    GPSTracker gps;
-    gps = new GPSTracker(MainActivity.this);
 
-    if(gps.canGetLocation) {
-        LatLng currentLocation = new LatLng(gps.getLatitude(), gps.getLongitude());
-        mMap.addMarker(new MarkerOptions().position(currentLocation).title("current location"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
+    //Map Stuff
+    public void onMapReady(GoogleMap googleMap) {
     }
-}
+
+    public void recieveCurrentImageLocation(Uri imageUri){
+        Toast.makeText(MainActivity.this, imageUri.toString(), Toast.LENGTH_LONG).show();
+    }
+
+    protected void addMarkerForPicture(Uri imageUri) {
+        GPSTracker gps;
+        gps = new GPSTracker(MainActivity.this);
+
+        if (gps.canGetLocation) {
+            LatLng currentLocation = new LatLng(gps.getLatitude(), gps.getLongitude());
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
+            mMap.moveCamera(CameraUpdateFactory.zoomIn());
+            Marker marker = mMap.addMarker(new MarkerOptions()
+
+                            .position(currentLocation)
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin))
+            );
+
+            marker.showInfoWindow();
+        }
 //End Map Stuff
 
     }
+
+    private void loadImageFromStorage(String path)
+    {
+        try {
+            File f=new File(path, "profile.jpg");
+            Bitmap b = BitmapFactory.decodeStream(new FileInputStream(f));
+            ImageView img=(ImageView)findViewById(R.id.locationPhoto);
+            img.setImageBitmap(b);
+        }
+        catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+    }
+}
 

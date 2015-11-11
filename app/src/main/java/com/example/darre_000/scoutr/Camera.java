@@ -1,18 +1,21 @@
 package com.example.darre_000.scoutr;
 
-        import android.app.Activity;
+import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
-import android.widget.Toast;
+
+import java.io.File;
+import java.io.FileOutputStream;
 
 class Camera_Activity extends AppCompatActivity {
 
@@ -20,11 +23,6 @@ class Camera_Activity extends AppCompatActivity {
     private static int PICTURE_TAKE = 1;
     private Uri imageUri;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_camera);
-    }
 
     @Override
     protected void onActivityResult(int requestCdoe, int resultCode, Intent intent){
@@ -40,14 +38,34 @@ class Camera_Activity extends AppCompatActivity {
 
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(cr, imageUri);
+                saveToInternalSorage(bitmap);
                 imageView.setImageBitmap(bitmap);
-                Toast.makeText(Camera_Activity.this,chosenImage.toString() +" \n yay you took a picture" ,Toast.LENGTH_LONG).show();
-                //Toast.makeText(Camera_Activity.this,chosenImage.toString() +" \n yay you took a picture" ,Toast.LENGTH_LONG).show();
 
             } catch(Exception e){
                 Log.e(logTrack, e.toString());
             }
         }
+    }
+
+    private String saveToInternalSorage(Bitmap bitmapImage){
+        ContextWrapper cw = new ContextWrapper(getApplicationContext());
+        // path to /data/data/yourapp/app_data/imageDir
+        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+        // Create imageDir
+        File mypath=new File(directory,"profile.jpg");
+
+        FileOutputStream fos = null;
+        try {
+
+            fos = new FileOutputStream(mypath);
+
+            // Use the compress method on the BitMap object to write image to the OutputStream
+            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
+            fos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return directory.getAbsolutePath();
     }
 
 
