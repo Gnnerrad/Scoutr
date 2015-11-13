@@ -15,25 +15,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_gravity="center"
-        android:weightSum="5">
-
-        <!--<TableRow-->
-        <!--android:id="@+id/Ono"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_weight="1"-->
-        <!--android:gravity="center">-->
-
+        android:layout_gravity="center">
 
         <ImageView
             android:id="@+id/popupTolietIcon"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:layout_weight="1"
-            android:adjustViewBounds="true"
-            android:background="#dfdfdf"
-
             android:src="@drawable/wc_icon"></ImageView>
 
         <ImageView
@@ -41,68 +28,26 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_weight="1"
-            android:adjustViewBounds="true"
             android:src="@drawable/wifi_icon"></ImageView>
 
         <ImageView
             android:id="@+id/popupPowerIcon"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:layout_weight="1"
-            android:adjustViewBounds="true"
             android:src="@drawable/power_icon"></ImageView>
 
         <ImageView
             android:id="@+id/popupAccesibilityIcon"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:layout_weight="1"
-            android:adjustViewBounds="true"
             android:src="@drawable/pin"></ImageView>
 
         <ImageView
             android:id="@+id/popupSunIcon"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:layout_weight="1"
             android:adjustViewBounds="true"
             android:src="@drawable/weather_icon"></ImageView>
 
-        <!--<TextView-->
-        <!--android:id="@+id/OneTwo"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:background="#33cc66"-->
-        <!--android:textColor="#ff7f7f7f"-->
-        <!--android:textSize="14dp" />-->
-
-        <!--</TableRow>-->
-
-        <!--<TableRow-->
-        <!--android:id="@+id/Two"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_weight="1"-->
-        <!--android:gravity="center">-->
-
-        <!--<ImageView-->
-        <!--android:id="@+id/popupWifiIcon"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:src="@drawable/pin"-->
-        <!--android:adjustViewBounds="true"-->
-        <!--android:background="#c55cc5"></ImageView>-->
-
-        <!--<TextView-->
-        <!--android:id="@+id/TwoTwo"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:background="#44ff77"-->
-        <!--android:textColor="#ff7f7f7f"-->
-        <!--android:textSize="14dp" />-->
-
-        <!--</TableRow>-->
-
     </LinearLayout>
-
 </LinearLayout>

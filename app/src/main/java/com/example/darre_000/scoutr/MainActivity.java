@@ -12,7 +12,6 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -124,7 +123,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         startActivityForResult(intent, PICTURE_TAKE);
     }
 
-    protected void onActivityResult(int requestCdoe, int resultCode, Intent intent){
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent){
         super.onActivityResult(resultCode, resultCode, intent);
 
         if (resultCode == Activity.RESULT_OK){
@@ -138,9 +138,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(cr, imageUri);
                 imageView.setImageBitmap(bitmap);
-            } catch(Exception e) {
-
-            }
+            } catch(Exception e) {}
         }
         addMarkerForPicture();
     }
@@ -160,7 +158,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             marker.showInfoWindow();
         }
 //End Map Stuff
-
     }
 }
 
