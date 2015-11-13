@@ -23,7 +23,7 @@ public class CameraActivity extends AppCompatActivity {
     private static int PICTURE_TAKE = 1;
     private Uri imageUri;
 
-
+    //random
     @Override
     protected void onActivityResult(int requestCdoe, int resultCode, Intent intent){
         super.onActivityResult(resultCode,resultCode,intent);
