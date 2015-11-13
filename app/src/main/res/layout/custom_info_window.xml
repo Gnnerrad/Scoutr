@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="#ffffff"
+    android:background="#bfbfbf"
     android:orientation="vertical">
 
     <ImageView
@@ -28,43 +28,45 @@
 
         <ImageView
             android:id="@+id/popupTolietIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_weight="1"
             android:adjustViewBounds="true"
-            android:src="@drawable/pin"></ImageView>
+            android:background="#dfdfdf"
+
+            android:src="@drawable/wc_icon"></ImageView>
 
         <ImageView
             android:id="@+id/popupWifiIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_weight="1"
             android:adjustViewBounds="true"
-            android:src="@drawable/pin"></ImageView>
+            android:src="@drawable/wifi_icon"></ImageView>
 
         <ImageView
             android:id="@+id/popupPowerIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_weight="1"
             android:adjustViewBounds="true"
-            android:src="@drawable/pin"></ImageView>
+            android:src="@drawable/power_icon"></ImageView>
 
         <ImageView
             android:id="@+id/popupAccesibilityIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_weight="1"
             android:adjustViewBounds="true"
             android:src="@drawable/pin"></ImageView>
 
         <ImageView
             android:id="@+id/popupSunIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_weight="1"
             android:adjustViewBounds="true"
-            android:src="@drawable/pin"></ImageView>
+            android:src="@drawable/weather_icon"></ImageView>
 
         <!--<TextView-->
         <!--android:id="@+id/OneTwo"-->
