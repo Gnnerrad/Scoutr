@@ -18,7 +18,6 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SearchView;
-import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -58,12 +57,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             public View getInfoContents(Marker marker) {
                 View v = getLayoutInflater().inflate(R.layout.custom_info_window, null);
                 LatLng latLng = marker.getPosition();
-                TextView tvLat = (TextView) v.findViewById(R.id.infoWindowTitle);
-                TextView tvLng = (TextView) v.findViewById(R.id.InfoWindowSnippet);
                 ImageView locationPhoto = (ImageView) v.findViewById(R.id.locationPhoto);
                 locationPhoto.setImageURI(imageUri);
-                tvLat.setText("Latitude:" + latLng.latitude);
-                tvLng.setText("Longitude:"+ latLng.longitude);
                 return v;
             }
         });
