@@ -12,6 +12,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -114,8 +115,13 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     };
 
     private void takeLocationPhoto(View v){
+        gps = new GPSTracker(MainActivity.this);
         Intent intent  = new Intent("android.media.action.IMAGE_CAPTURE");
-        File photo = new File(Environment.getExternalStorageDirectory(),"location_picture.jpg");
+
+        String photoName = Double.toString(gps.getLongitude()) +
+                     "_" + Double.toString(gps.getLatitude() ) + ".jpg";
+
+        File photo = new File(Environment.getExternalStorageDirectory(),photoName);
         imageUri = Uri.fromFile(photo);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
         startActivityForResult(intent, PICTURE_TAKE);
@@ -144,8 +150,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     protected void addMarkerForPicture() {
-        GPSTracker gps;
-        gps = new GPSTracker(MainActivity.this);
 
         if (gps.canGetLocation) {
             LatLng currentLocation = new LatLng(gps.getLatitude(), gps.getLongitude());
