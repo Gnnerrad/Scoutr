@@ -57,7 +57,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 TextView tvLat = (TextView) v.findViewById(R.id.infoWindowTitle);
                 TextView tvLng = (TextView) v.findViewById(R.id.InfoWindowSnippet);
                 ImageView locationPhoto = (ImageView) v.findViewById(R.id.locationPhoto);
-
+                locationPhoto.setImageURI(imageUri);
                 tvLat.setText("Latitude:" + latLng.latitude);
                 tvLng.setText("Longitude:"+ latLng.longitude);
                 return v;
@@ -65,22 +65,13 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         });
         mapFragment.getMapAsync(this);
 
-
-//Top Bar Stuff
         View topBar = findViewById(R.id.topBarLayout);
 
-//Camera Button
         ImageButton cameraButton = (ImageButton) findViewById(R.id.cameraButton);
         cameraButton.setOnClickListener(camListener);
 
-//Search Bar
         SearchView searchView = (SearchView) findViewById(R.id.searchView);
 
-//End Top Bar Stuff
-
-
-//Bottom Bar Stuff
-//LeftButton
         ImageButton favourites = (ImageButton) findViewById(R.id.favourites);
         favourites.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,7 +81,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-//Middle button
         Button scoutrButton = (Button) findViewById(R.id.scoutr_social_network);
         scoutrButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,7 +90,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-//Menu button
         ImageButton menu = (ImageButton) findViewById(R.id.bottomMenuButton);
         menu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,7 +100,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
-//End Bottom Bar
+    public void onMapReady(GoogleMap googleMap) {
+
+    }
 
     private View.OnClickListener camListener =  new View.OnClickListener(){
         public void onClick(View v){
@@ -121,18 +112,13 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void takeLocationPhoto(View v){
         Intent intent  = new Intent("android.media.action.IMAGE_CAPTURE");
-        File photo = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),"location_picture.jpg");
+        File photo = new File(Environment.getExternalStorageDirectory(),"location_picture.jpg");
         imageUri = Uri.fromFile(photo);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
         startActivityForResult(intent, PICTURE_TAKE);
         addMarkerForPicture(imageUri);
     }
 
-
-    //Map Stuff
-    public void onMapReady(GoogleMap googleMap) {
-
-    }
 
     protected void addMarkerForPicture(Uri imageUri) {
         GPSTracker gps;
