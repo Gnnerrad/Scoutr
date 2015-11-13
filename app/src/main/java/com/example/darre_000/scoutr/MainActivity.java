@@ -116,11 +116,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         imageUri = Uri.fromFile(photo);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
         startActivityForResult(intent, PICTURE_TAKE);
-        addMarkerForPicture(imageUri);
+        addMarkerForPicture();
     }
 
 
-    protected void addMarkerForPicture(Uri imageUri) {
+    protected void addMarkerForPicture() {
         GPSTracker gps;
         gps = new GPSTracker(MainActivity.this);
 
