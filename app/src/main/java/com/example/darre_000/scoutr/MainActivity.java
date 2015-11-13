@@ -2,7 +2,10 @@ package com.example.darre_000.scoutr;
 
 //This is a comment
 
+import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -116,6 +119,26 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         imageUri = Uri.fromFile(photo);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
         startActivityForResult(intent, PICTURE_TAKE);
+    }
+
+    protected void onActivityResult(int requestCdoe, int resultCode, Intent intent){
+        super.onActivityResult(resultCode, resultCode, intent);
+
+        if (resultCode == Activity.RESULT_OK){
+            Uri chosenImage = imageUri;
+            getContentResolver().notifyChange(chosenImage,null);
+
+            ImageView imageView = (ImageView)findViewById(R.id.image_camera);
+            ContentResolver cr = getContentResolver();
+            Bitmap bitmap;
+
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(cr, imageUri);
+                imageView.setImageBitmap(bitmap);
+            } catch(Exception e) {
+
+            }
+        }
         addMarkerForPicture();
     }
 
