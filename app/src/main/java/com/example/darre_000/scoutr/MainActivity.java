@@ -57,12 +57,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             public View getInfoContents(Marker marker) {
                 View v = getLayoutInflater().inflate(R.layout.custom_info_window, null);
                 LatLng latLng = marker.getPosition();
-                TextView tvLat = (TextView) v.findViewById(R.id.infoWindowTitle);
-                TextView tvLng = (TextView) v.findViewById(R.id.InfoWindowSnippet);
                 ImageView locationPhoto = (ImageView) v.findViewById(R.id.locationPhoto);
+                TextView tvLng = (TextView) v.findViewById(R.id.OneTwo);
+                TextView TwoTwo = (TextView) v.findViewById(R.id.TwoTwo);
                 locationPhoto.setImageURI(imageUri);
-                tvLat.setText("Latitude:" + latLng.latitude);
-                tvLng.setText("Longitude:"+ latLng.longitude);
+                tvLng.setText("OneTwo");
+                TwoTwo.setText("TwoTwo");
                 return v;
             }
         });
