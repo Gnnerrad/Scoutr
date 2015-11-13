@@ -113,6 +113,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         gps = new GPSTracker(MainActivity.this);
         Intent intent  = new Intent("android.media.action.IMAGE_CAPTURE");
 
+        //asdjfl
+
         String photoName = Double.toString(gps.getLongitude()) +
                      "_" + Double.toString(gps.getLatitude() ) + ".jpg";
 
