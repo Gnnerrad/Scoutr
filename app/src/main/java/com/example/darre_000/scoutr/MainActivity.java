@@ -124,7 +124,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         startActivityForResult(intent, PICTURE_TAKE);
     }
 
-    protected void onActivityResult(int requestCdoe, int resultCode, Intent intent){
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent){
         super.onActivityResult(resultCode, resultCode, intent);
 
         if (resultCode == Activity.RESULT_OK){
