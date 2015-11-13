@@ -28,7 +28,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.io.File;
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback {
-
+    //charles has been here
     private GoogleMap mMap;
     private GPSTracker gps;
     private static int PICTURE_TAKE = 0;
@@ -85,7 +85,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         favourites.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "I couldn't remember what this button was ment to be so I called it favourites", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "This links to favourite locations", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
@@ -95,7 +95,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         scoutrButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "I couldn't remember what this button was ment to be so I called it scoutrButton", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "This links to Scoutr news feed", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });

@@ -7,8 +7,9 @@
 
     <ImageView
         android:id="@+id/locationPhoto"
-        android:layout_width="250dp"
-        android:layout_height="150dp"
+        android:layout_width="272dp"
+        android:layout_height="163dp"
+        android:src ="@drawable/darren"
         android:layout_marginRight="5dp"
         android:adjustViewBounds="true"
         android:background="#1122dd">
