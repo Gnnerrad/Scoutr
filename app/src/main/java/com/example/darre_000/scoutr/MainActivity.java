@@ -118,7 +118,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         String ts = tsLong.toString();
 
         String photoName = Double.toString(gps.getLongitude()) +
-                "_" + Double.toString(gps.getLatitude()) + "_" + ts + ".jpg";
+                "_" + Double.toString(gps.getLatitude()) + "_" + imageCount + ".jpg";
 
         File photo = new File(Environment.getExternalStorageDirectory(), photoName);
         imageUri = Uri.fromFile(photo);
@@ -149,7 +149,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {}
 
     protected void addMarkerForPicture() {
-        imageCount++;
         if (gps.canGetLocation) {
             LatLng currentLocation = new LatLng(gps.getLatitude(), gps.getLongitude());
             mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
@@ -162,6 +161,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             );
             marker.showInfoWindow();
         }
+        imageCount++;
     }
 }
 
