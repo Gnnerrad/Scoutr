@@ -1,7 +1,9 @@
 package com.example.darre_000.scoutr;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ContentResolver;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -34,8 +36,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     private GPSTracker gps;
     private static int PICTURE_TAKE = 0;
     private Uri imageUri;
-    private HashMap<String, Uri> popupImgMap;
+    private HashMap<String, Bitmap> popupImgMap;
     private int imageCount;
+    Bitmap bitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,12 +61,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public View getInfoContents(Marker marker) {
                 View v = getLayoutInflater().inflate(R.layout.custom_info_window, null);
-                LatLng latLng = marker.getPosition();
+//                LatLng latLng = marker.getPosition();
                 TextView lat = (TextView) v.findViewById(R.id.latlng);
                 lat.setText(imageUri.toString());
-                popupImgMap.put(marker.getSnippet(), imageUri);
+                popupImgMap.put(marker.getSnippet(), bitmap);
                 ImageView locationPhoto = (ImageView) v.findViewById(R.id.locationPhoto);
-                locationPhoto.setImageURI(popupImgMap.get(marker.getSnippet()));
+                locationPhoto.setImageBitmap(popupImgMap.get(marker.getSnippet()));
                 return v;
             }
         });
@@ -135,7 +138,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
             ImageView imageView = (ImageView) findViewById(R.id.image_camera);
             ContentResolver cr = getContentResolver();
-            Bitmap bitmap;
+//            Bitmap bitmap;
 
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(cr, imageUri);
@@ -160,8 +163,33 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                             .snippet(Integer.toHexString(imageCount))
             );
             marker.showInfoWindow();
+            imageCount++;
         }
-        imageCount++;
+        else{
+            //The alert popup idea comes from the second response of http://stackoverflow.com/questions/2478517/how-to-display-a-yes-no-dialog-box-in-android
+            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    switch (which){
+                        case DialogInterface.BUTTON_POSITIVE:
+                            Intent gpsOptionsIntent = new Intent(
+                                    android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                            startActivity(gpsOptionsIntent);
+                            addMarkerForPicture();
+                            break;
+
+                        case DialogInterface.BUTTON_NEGATIVE:
+                            //No button clicked
+                            break;
+                    }
+                }
+            };
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("Location services must be enabled to drop a new pin.\nWould you like to enable location services now?")
+                    .setPositiveButton("Yes", dialogClickListener)
+                    .setNegativeButton("No", dialogClickListener).show();
+        }
     }
 }
 
