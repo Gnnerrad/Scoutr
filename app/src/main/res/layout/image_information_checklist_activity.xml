@@ -49,9 +49,9 @@
 
     <Button
         android:id="@+id/btnDisplay"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="test_button" />
+        android:text="Add Location" />
 
         </LinearLayout>
 </LinearLayout>

@@ -18,20 +18,20 @@ public class CheckBoxActivity extends AppCompatActivity{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.image_information_checklist_activity);
-        Bundle extras = getIntent().getExtras();
-        if (extras != null && extras.containsKey("imageUri") && extras.getString("imageUri") != null) {
-            try {
-//                imageUri = extras.getString("imageUri");
-//                ImageView imageView = (ImageView) findViewById(R.id.checklistPhoto);
-//                imageView.setImageURI(Uri.parse(imageUri));
-                addListenerOnChkIos();
-                addListenerOnButton();
-            }catch(Exception e){}
-        }
-        else{
-            Toast.makeText(CheckBoxActivity.this, "YOU DONE FUCKED UP",
-                    Toast.LENGTH_LONG).show();
-        }
+//        Bundle extras = getIntent().getExtras();
+//        if (extras != null && extras.containsKey("imageUri") && extras.getString("imageUri") != null) {
+//            try {
+////                imageUri = extras.getString("imageUri");
+////                ImageView imageView = (ImageView) findViewById(R.id.checklistPhoto);
+////                imageView.setImageURI(Uri.parse(imageUri));
+//                addListenerOnChkIos();
+//                addListenerOnButton();
+//            }catch(Exception e){}
+//        }
+//        else{
+//            Toast.makeText(CheckBoxActivity.this, "YOU DONE FUCKED UP",
+//                    Toast.LENGTH_LONG).show();
+//        }
     }
 
     public void addListenerOnChkIos() {
