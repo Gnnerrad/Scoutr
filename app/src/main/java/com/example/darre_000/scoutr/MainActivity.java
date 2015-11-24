@@ -1,10 +1,14 @@
 package com.example.darre_000.scoutr;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentActivity;
@@ -23,17 +27,15 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.HashMap;
+import java.io.File;
 
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback {
     //charles has been here
     private GoogleMap mMap;
     private GPSTracker gps;
-    //    private Uri imageUri;
-    private HashMap<String, Bitmap> popupImgMap;
+        private Uri imageUri;
+//    private HashMap<String, Bitmap> popupImgMap;
     private int imageCount;
     Bitmap bitmap;
 //    private CheckBox chkIos, chkAndroid, chkWindows;
@@ -43,7 +45,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        popupImgMap = new HashMap<>();
         setContentView(R.layout.activity_main);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -64,9 +65,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 //                LatLng latLng = marker.getPosition();
                 TextView lat = (TextView) v.findViewById(R.id.latlng);
 //                lat.setText(imageUri.toString());
-                popupImgMap.put(marker.getSnippet(), bitmap);
                 ImageView locationPhoto = (ImageView) v.findViewById(R.id.locationPhoto);
-                locationPhoto.setImageBitmap(popupImgMap.get(marker.getSnippet()));
+                locationPhoto.setImageURI(imageUri);
                 return v;
             }
         });
@@ -108,78 +108,50 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private View.OnClickListener camListener = new View.OnClickListener() {
-        @Override
         public void onClick(View v) {
-            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            startActivityForResult(intent, 1);
-
-//            gps = new GPSTracker(MainActivity.this);
-//            Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-//            Long tsLong = System.currentTimeMillis() / 1000;
-//            String ts = tsLong.toString();
-//
-//            String photoName = Double.toString(gps.getLongitude()) +
-//                    "_" + Double.toString(gps.getLatitude()) + "_" + imageCount + ".jpg";
-//
-//            File photo = new File(Environment.getExternalStorageDirectory(), photoName);
-//            Uri photoUri = Uri.fromFile(photo);
-//            intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri.toString());
-//            startActivityForResult(intent, 1);
-//            Intent intent = new Intent (MediaStore.ACTION_IMAGE_CAPTURE);
-//            File file = new File ("sd/Scoutr/", "image.jpg");
-//            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
-//            startActivityForResult(intent, 0);
+            takeLocationPhoto(v);
         }
     };
 
+    private void takeLocationPhoto(View v) {
+        gps = new GPSTracker(MainActivity.this);
+        Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
 
-    @Override
+        Long tsLong = System.currentTimeMillis() / 1000;
+        String ts = tsLong.toString();
+
+        String photoName = Double.toString(gps.getLongitude()) +
+                "_" + Double.toString(gps.getLatitude()) + "_" + imageCount + ".jpg";
+
+        File photo = new File(Environment.getExternalStorageDirectory(), photoName);
+        imageUri = Uri.fromFile(photo);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+        startActivityForResult(intent, 1);
+    }
+
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(resultCode, resultCode, intent);
-        if (requestCode == 1 && resultCode== RESULT_OK && intent != null){
-            Bundle extras = intent.getExtras();
-            Bitmap bitMap = (Bitmap) extras.get("data");
-            FileOutputStream out = null;
-            try {
-                out = new FileOutputStream("TESTIMAGE");
-                bitMap.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
-                // PNG is a lossless format, the compression factor (100) is ignored
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                try {
-                    if (out != null) {
-                        out.close();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-//            Intent imageChecklistIntent = new Intent(this, CheckBoxActivity.class);
-//            imageChecklistIntent.putExtra("imageUri", Uri.);
-//            startActivity(imageChecklistIntent); //change to forResult.
-//            addMarkerForPicture();
 
+        if (resultCode == Activity.RESULT_OK) {
+            Uri chosenImage = imageUri;
+            getContentResolver().notifyChange(chosenImage, null);
+
+            ImageView imageView = (ImageView) findViewById(R.id.image_camera);
+            ContentResolver cr = getContentResolver();
+            Bitmap bitmap;
+
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(cr, imageUri);
+                imageView.setImageBitmap(bitmap);
+            } catch (Exception e) {
+            }
         }
-//        if (resultCode == Activity.RESULT_OK) {
-//            Uri chosenImage =  Uri.parse(intent.getExtras().getString(MediaStore.EXTRA_OUTPUT));;
-//            getContentResolver().notifyChange(chosenImage, null);
-//
-//            ImageView imageView = (ImageView) findViewById(R.id.image_camera);
-//            ContentResolver cr = getContentResolver();
-////            Bitmap bitmap;
-//
-//            try {
-//                bitmap = MediaStore.Images.Media.getBitmap(cr, chosenImage);
-//                imageView.setImageBitmap(bitmap);
-//                Intent imageChecklistIntent = new Intent(this, CheckBoxActivity.class);
-//                imageChecklistIntent.putExtra("imageUri", chosenImage.toString());
-//                startActivity(imageChecklistIntent); //change to forResult.
-//                addMarkerForPicture();
-//            } catch (Exception e) {
-//            }
-//        }
+        Intent photoCheckbox = new Intent(this, CheckBoxActivity.class);
+        photoCheckbox.putExtra("imageUri", imageUri.toString());
+        startActivity(photoCheckbox);
+        addMarkerForPicture();
     }
+
 
     public void onMapReady(GoogleMap googleMap) {
     }

@@ -1,5 +1,6 @@
 package com.example.darre_000.scoutr;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -24,6 +25,7 @@ public class CheckBoxActivity extends AppCompatActivity{
             try {
                 imageUri = extras.getString("imageUri");
                 ImageView imageView = (ImageView) findViewById(R.id.checklistPhoto);
+                imageView.setImageURI(Uri.parse(imageUri));
                 addListenerOnChkIos();
                 addListenerOnButton();
             }catch(Exception e){}
