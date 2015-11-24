@@ -31,6 +31,10 @@
             android:label="@string/title_activity_camera"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
+        <activity
+            android:name=".CheckBoxActivity"
+            android:label="@string/title_image_checkbox">
+        </activity>
     </application>
 
 </manifest>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/checklistPhoto"
+        android:layout_width="240dp"
+        android:layout_height="135dp"
+        android:adjustViewBounds="true"></ImageView>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+    <CheckBox
+        android:id="@+id/checklistAccessibility"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/checklist_accessibility" />
+
+    <CheckBox
+        android:id="@+id/checklistPower"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checked="true"
+        android:text="@string/checklist_power" />
+
+    <CheckBox
+        android:id="@+id/checklistSun"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/checklist_sun" />
+
+    <CheckBox
+        android:id="@+id/checklistWc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/checklist_wc" />
+
+    <CheckBox
+        android:id="@+id/checklistWifi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/checklist_wifi" />
+
+    <Button
+        android:id="@+id/btnDisplay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="test_button" />
+
+        </LinearLayout>
+</LinearLayout>

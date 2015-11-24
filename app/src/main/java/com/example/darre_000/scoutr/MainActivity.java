@@ -1,14 +1,10 @@
 package com.example.darre_000.scoutr;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentActivity;
@@ -27,18 +23,22 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 
-public class MainActivity extends FragmentActivity implements OnMapReadyCallback{
+
+public class MainActivity extends FragmentActivity implements OnMapReadyCallback {
     //charles has been here
     private GoogleMap mMap;
     private GPSTracker gps;
-    private static int PICTURE_TAKE = 0;
-    private Uri imageUri;
+    //    private Uri imageUri;
     private HashMap<String, Bitmap> popupImgMap;
     private int imageCount;
     Bitmap bitmap;
+//    private CheckBox chkIos, chkAndroid, chkWindows;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +63,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 View v = getLayoutInflater().inflate(R.layout.custom_info_window, null);
 //                LatLng latLng = marker.getPosition();
                 TextView lat = (TextView) v.findViewById(R.id.latlng);
-                lat.setText(imageUri.toString());
+//                lat.setText(imageUri.toString());
                 popupImgMap.put(marker.getSnippet(), bitmap);
                 ImageView locationPhoto = (ImageView) v.findViewById(R.id.locationPhoto);
                 locationPhoto.setImageBitmap(popupImgMap.get(marker.getSnippet()));
@@ -108,48 +108,81 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private View.OnClickListener camListener = new View.OnClickListener() {
+        @Override
         public void onClick(View v) {
-            takeLocationPhoto(v);
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            startActivityForResult(intent, 1);
+
+//            gps = new GPSTracker(MainActivity.this);
+//            Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+//            Long tsLong = System.currentTimeMillis() / 1000;
+//            String ts = tsLong.toString();
+//
+//            String photoName = Double.toString(gps.getLongitude()) +
+//                    "_" + Double.toString(gps.getLatitude()) + "_" + imageCount + ".jpg";
+//
+//            File photo = new File(Environment.getExternalStorageDirectory(), photoName);
+//            Uri photoUri = Uri.fromFile(photo);
+//            intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri.toString());
+//            startActivityForResult(intent, 1);
+//            Intent intent = new Intent (MediaStore.ACTION_IMAGE_CAPTURE);
+//            File file = new File ("sd/Scoutr/", "image.jpg");
+//            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
+//            startActivityForResult(intent, 0);
         }
     };
 
-    private void takeLocationPhoto(View v) {
-        gps = new GPSTracker(MainActivity.this);
-        Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
 
-        Long tsLong = System.currentTimeMillis() / 1000;
-        String ts = tsLong.toString();
-
-        String photoName = Double.toString(gps.getLongitude()) +
-                "_" + Double.toString(gps.getLatitude()) + "_" + imageCount + ".jpg";
-
-        File photo = new File(Environment.getExternalStorageDirectory(), photoName);
-        imageUri = Uri.fromFile(photo);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-        startActivityForResult(intent, PICTURE_TAKE);
-    }
-
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(resultCode, resultCode, intent);
-
-        if (resultCode == Activity.RESULT_OK) {
-            Uri chosenImage = imageUri;
-            getContentResolver().notifyChange(chosenImage, null);
-
-            ImageView imageView = (ImageView) findViewById(R.id.image_camera);
-            ContentResolver cr = getContentResolver();
-//            Bitmap bitmap;
-
+        if (requestCode == 1 && resultCode== RESULT_OK && intent != null){
+            Bundle extras = intent.getExtras();
+            Bitmap bitMap = (Bitmap) extras.get("data");
+            FileOutputStream out = null;
             try {
-                bitmap = MediaStore.Images.Media.getBitmap(cr, imageUri);
-                imageView.setImageBitmap(bitmap);
+                out = new FileOutputStream("TESTIMAGE");
+                bitMap.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
+                // PNG is a lossless format, the compression factor (100) is ignored
             } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (out != null) {
+                        out.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
+//            Intent imageChecklistIntent = new Intent(this, CheckBoxActivity.class);
+//            imageChecklistIntent.putExtra("imageUri", Uri.);
+//            startActivity(imageChecklistIntent); //change to forResult.
+//            addMarkerForPicture();
+
         }
-        addMarkerForPicture();
+//        if (resultCode == Activity.RESULT_OK) {
+//            Uri chosenImage =  Uri.parse(intent.getExtras().getString(MediaStore.EXTRA_OUTPUT));;
+//            getContentResolver().notifyChange(chosenImage, null);
+//
+//            ImageView imageView = (ImageView) findViewById(R.id.image_camera);
+//            ContentResolver cr = getContentResolver();
+////            Bitmap bitmap;
+//
+//            try {
+//                bitmap = MediaStore.Images.Media.getBitmap(cr, chosenImage);
+//                imageView.setImageBitmap(bitmap);
+//                Intent imageChecklistIntent = new Intent(this, CheckBoxActivity.class);
+//                imageChecklistIntent.putExtra("imageUri", chosenImage.toString());
+//                startActivity(imageChecklistIntent); //change to forResult.
+//                addMarkerForPicture();
+//            } catch (Exception e) {
+//            }
+//        }
     }
 
-    public void onMapReady(GoogleMap googleMap) {}
+    public void onMapReady(GoogleMap googleMap) {
+    }
 
     protected void addMarkerForPicture() {
         if (gps.canGetLocation) {
@@ -164,13 +197,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             );
             marker.showInfoWindow();
             imageCount++;
-        }
-        else{
+        } else {
             //The alert popup idea comes from the second response of http://stackoverflow.com/questions/2478517/how-to-display-a-yes-no-dialog-box-in-android
-            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            DialogInterface.OnClickListener enableGpsClickListener = new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    switch (which){
+                    switch (which) {
                         case DialogInterface.BUTTON_POSITIVE:
                             Intent gpsOptionsIntent = new Intent(
                                     android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
@@ -187,8 +219,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage("Location services must be enabled to drop a new pin.\nWould you like to enable location services now?")
-                    .setPositiveButton("Yes", dialogClickListener)
-                    .setNegativeButton("No", dialogClickListener).show();
+                    .setPositiveButton("Yes", enableGpsClickListener)
+                    .setNegativeButton("No", enableGpsClickListener).show();
         }
     }
 }
