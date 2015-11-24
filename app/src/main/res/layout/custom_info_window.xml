@@ -9,6 +9,7 @@
         android:id="@+id/locationPhoto"
         android:layout_width="240dp"
         android:layout_height="135dp"
+        android:src="@drawable/lighthouse"
         android:adjustViewBounds="true"></ImageView>
 
     <LinearLayout

@@ -1,13 +1,11 @@
 package com.example.darre_000.scoutr;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 public class CheckBoxActivity extends AppCompatActivity{
@@ -23,9 +21,9 @@ public class CheckBoxActivity extends AppCompatActivity{
         Bundle extras = getIntent().getExtras();
         if (extras != null && extras.containsKey("imageUri") && extras.getString("imageUri") != null) {
             try {
-                imageUri = extras.getString("imageUri");
-                ImageView imageView = (ImageView) findViewById(R.id.checklistPhoto);
-                imageView.setImageURI(Uri.parse(imageUri));
+//                imageUri = extras.getString("imageUri");
+//                ImageView imageView = (ImageView) findViewById(R.id.checklistPhoto);
+//                imageView.setImageURI(Uri.parse(imageUri));
                 addListenerOnChkIos();
                 addListenerOnButton();
             }catch(Exception e){}

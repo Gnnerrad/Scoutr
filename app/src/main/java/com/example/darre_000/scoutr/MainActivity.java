@@ -65,8 +65,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 //                LatLng latLng = marker.getPosition();
                 TextView lat = (TextView) v.findViewById(R.id.latlng);
 //                lat.setText(imageUri.toString());
-                ImageView locationPhoto = (ImageView) v.findViewById(R.id.locationPhoto);
-                locationPhoto.setImageURI(imageUri);
+//                ImageView locationPhoto = (ImageView) v.findViewById(R.id.locationPhoto);
+//                locationPhoto.setImageURI(imageUri);
                 return v;
             }
         });
@@ -147,13 +147,19 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
         Intent photoCheckbox = new Intent(this, CheckBoxActivity.class);
-        photoCheckbox.putExtra("imageUri", imageUri.toString());
+//        photoCheckbox.putExtra("imageUri", imageUri.toString());
         startActivity(photoCheckbox);
         addMarkerForPicture();
     }
 
 
     public void onMapReady(GoogleMap googleMap) {
+        Marker marker = mMap.addMarker(new MarkerOptions()
+                        .title("King Charles")
+                        .position(new LatLng(0,0))
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin))
+                        .snippet(Integer.toHexString(imageCount))
+        );
     }
 
     protected void addMarkerForPicture() {
