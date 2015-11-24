@@ -2,16 +2,18 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="#bfbfbf"
     android:orientation="vertical">
-
+<FrameLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
     <ImageView
         android:id="@+id/locationPhoto"
         android:layout_width="240dp"
         android:layout_height="135dp"
         android:src="@drawable/lighthouse"
+        android:scaleType="centerCrop"
         android:adjustViewBounds="true"></ImageView>
-
+</FrameLayout>
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

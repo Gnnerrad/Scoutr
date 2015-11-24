@@ -156,7 +156,39 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         Marker marker = mMap.addMarker(new MarkerOptions()
                         .title("King Charles")
-                        .position(new LatLng(0,0))
+                        .position(new LatLng(53.3860,-6.0660))
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin))
+                        .snippet(Integer.toHexString(imageCount))
+        );
+        Marker marker1 = mMap.addMarker(new MarkerOptions()
+                        .title("King Charles")
+                        .position(new LatLng(53.3860,-8.0660))
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin))
+                        .snippet(Integer.toHexString(imageCount))
+        );
+
+        Marker marker6 = mMap.addMarker(new MarkerOptions()
+                        .title("King Charles")
+                        .position(new LatLng(53.3860,-7.0660))
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin))
+                        .snippet(Integer.toHexString(imageCount))
+        );
+        Marker marker2 = mMap.addMarker(new MarkerOptions()
+                        .title("King Charles")
+                        .position(new LatLng(52.3860,-3.0660))
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin))
+                        .snippet(Integer.toHexString(imageCount))
+        );
+
+        Marker marker4 = mMap.addMarker(new MarkerOptions()
+                        .title("King Charles")
+                        .position(new LatLng(53.3860,-6.0660))
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin))
+                        .snippet(Integer.toHexString(imageCount))
+        );
+        Marker marker9 = mMap.addMarker(new MarkerOptions()
+                        .title("King Charles")
+                        .position(new LatLng(53.3860,-6.0660))
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin))
                         .snippet(Integer.toHexString(imageCount))
         );

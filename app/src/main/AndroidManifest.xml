@@ -33,7 +33,8 @@
         </activity>
         <activity
             android:name=".CheckBoxActivity"
-            android:label="@string/title_image_checkbox">
+            android:label="@string/title_image_checkbox"
+            android:theme="@style/AppTheme.NoActionBar">
         </activity>
     </application>
 
