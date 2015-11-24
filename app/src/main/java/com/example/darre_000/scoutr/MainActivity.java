@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -34,12 +35,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     //charles has been here
     private GoogleMap mMap;
     private GPSTracker gps;
-        private Uri imageUri;
-//    private HashMap<String, Bitmap> popupImgMap;
+    private Uri imageUri;
+    //    private HashMap<String, Bitmap> popupImgMap;
     private int imageCount;
     Bitmap bitmap;
 //    private CheckBox chkIos, chkAndroid, chkWindows;
-
 
 
     @Override
@@ -64,9 +64,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 View v = getLayoutInflater().inflate(R.layout.custom_info_window, null);
 //                LatLng latLng = marker.getPosition();
                 TextView lat = (TextView) v.findViewById(R.id.latlng);
-//                lat.setText(imageUri.toString());
-//                ImageView locationPhoto = (ImageView) v.findViewById(R.id.locationPhoto);
-//                locationPhoto.setImageURI(imageUri);
+                lat.setText(imageUri.toString());
+                ImageView locationPhoto = (ImageView) v.findViewById(R.id.locationPhoto);
+                locationPhoto.setImageURI(imageUri);
                 return v;
             }
         });
@@ -133,65 +133,97 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         super.onActivityResult(resultCode, resultCode, intent);
 
         if (resultCode == Activity.RESULT_OK) {
-            Uri chosenImage = imageUri;
-            getContentResolver().notifyChange(chosenImage, null);
+            if (requestCode == 1) {
+                Uri chosenImage = imageUri;
+                getContentResolver().notifyChange(chosenImage, null);
 
-            ImageView imageView = (ImageView) findViewById(R.id.image_camera);
-            ContentResolver cr = getContentResolver();
-            Bitmap bitmap;
+                ImageView imageView = (ImageView) findViewById(R.id.image_camera);
+                ContentResolver cr = getContentResolver();
+                Bitmap bitmap;
 
-            try {
-                bitmap = MediaStore.Images.Media.getBitmap(cr, imageUri);
-                imageView.setImageBitmap(bitmap);
-            } catch (Exception e) {
+                try {
+                    bitmap = MediaStore.Images.Media.getBitmap(cr, imageUri);
+                    imageView.setImageBitmap(bitmap);
+                } catch (Exception e) {}
+
+                Intent photoCheckbox = new Intent(this, CheckBoxActivity.class);
+                photoCheckbox.putExtra("imageUri", imageUri.toString());
+                startActivityForResult(photoCheckbox, 2);
+            }
+            else if(requestCode == 2) {
+                if (intent.getExtras() != null) {
+//                    if(intent.getExtras().getBoolean("wcChk")){
+//                        Drawable wc = (Drawable) (R.drawable.wc_icon);
+//                        if(wc == null){
+//                            Toast.makeText(MainActivity.this, "IT IS NULL", Toast.LENGTH_SHORT).show();
+//                        }
+////                        wc.setVisibility(View.INVISIBLE);
+//                    }
+////                    if(intent.getExtras().getBoolean("wifiChk")){
+////                        ImageView wifi = (ImageView) findViewById(R.id.popupWifiIcon);
+////                        wifi.setVisibility(View.INVISIBLE);
+////                    }
+////                    if(intent.getExtras().getBoolean("powerChk")){
+////                        ImageView power = (ImageView) findViewById(R.id.popupPowerIcon);
+////                        power.setVisibility(View.INVISIBLE);
+////                    }
+////                    if(intent.getExtras().getBoolean("accessCheck")){
+////                        ImageView access = (ImageView) findViewById(R.id.popupAccesibilityIcon);
+////                        access.setVisibility(View.INVISIBLE);
+////                    }
+////                    if(intent.getExtras().getBoolean("sunCheck")){
+////                        ImageView sun = (ImageView) findViewById(R.id.popupSunIcon);
+////                        sun.setVisibility(View.INVISIBLE);
+////                    }
+                    addMarkerForPicture();
+                }
+                else{
+                    Toast.makeText(MainActivity.this, "checkBox Intent is null", Toast.LENGTH_SHORT).show();
+                }
             }
         }
-        Intent photoCheckbox = new Intent(this, CheckBoxActivity.class);
-//        photoCheckbox.putExtra("imageUri", imageUri.toString());
-        startActivity(photoCheckbox);
-        addMarkerForPicture();
     }
 
 
     public void onMapReady(GoogleMap googleMap) {
-        Marker marker = mMap.addMarker(new MarkerOptions()
-                        .title("King Charles")
-                        .position(new LatLng(53.3860,-6.0660))
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin))
-                        .snippet(Integer.toHexString(imageCount))
-        );
-        Marker marker1 = mMap.addMarker(new MarkerOptions()
-                        .title("King Charles")
-                        .position(new LatLng(53.3860,-8.0660))
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin))
-                        .snippet(Integer.toHexString(imageCount))
-        );
-
-        Marker marker6 = mMap.addMarker(new MarkerOptions()
-                        .title("King Charles")
-                        .position(new LatLng(53.3860,-7.0660))
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin))
-                        .snippet(Integer.toHexString(imageCount))
-        );
-        Marker marker2 = mMap.addMarker(new MarkerOptions()
-                        .title("King Charles")
-                        .position(new LatLng(52.3860,-3.0660))
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin))
-                        .snippet(Integer.toHexString(imageCount))
-        );
-
-        Marker marker4 = mMap.addMarker(new MarkerOptions()
-                        .title("King Charles")
-                        .position(new LatLng(53.3860,-6.0660))
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin))
-                        .snippet(Integer.toHexString(imageCount))
-        );
-        Marker marker9 = mMap.addMarker(new MarkerOptions()
-                        .title("King Charles")
-                        .position(new LatLng(53.3860,-6.0660))
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin))
-                        .snippet(Integer.toHexString(imageCount))
-        );
+//        Marker marker = mMap.addMarker(new MarkerOptions()
+//                        .title("King Charles")
+//                        .position(new LatLng(53.3860,-6.0660))
+//                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin))
+//                        .snippet(Integer.toHexString(imageCount))
+//        );
+//        Marker marker1 = mMap.addMarker(new MarkerOptions()
+//                        .title("King Charles")
+//                        .position(new LatLng(53.3860,-8.0660))
+//                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin))
+//                        .snippet(Integer.toHexString(imageCount))
+//        );
+//
+//        Marker marker6 = mMap.addMarker(new MarkerOptions()
+//                        .title("King Charles")
+//                        .position(new LatLng(53.3860,-7.0660))
+//                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin))
+//                        .snippet(Integer.toHexString(imageCount))
+//        );
+//        Marker marker2 = mMap.addMarker(new MarkerOptions()
+//                        .title("King Charles")
+//                        .position(new LatLng(52.3860,-3.0660))
+//                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin))
+//                        .snippet(Integer.toHexString(imageCount))
+//        );
+//
+//        Marker marker4 = mMap.addMarker(new MarkerOptions()
+//                        .title("King Charles")
+//                        .position(new LatLng(53.3860,-6.0660))
+//                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin))
+//                        .snippet(Integer.toHexString(imageCount))
+//        );
+//        Marker marker9 = mMap.addMarker(new MarkerOptions()
+//                        .title("King Charles")
+//                        .position(new LatLng(53.3860,-6.0660))
+//                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin))
+//                        .snippet(Integer.toHexString(imageCount))
+//        );
     }
 
     protected void addMarkerForPicture() {

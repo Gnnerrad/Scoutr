@@ -1,68 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:fitsSystemWindows="true"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     android:orientation="vertical">
-<FrameLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-    <ImageView
-        android:id="@+id/checklistPhoto"
+
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:src="@drawable/lighthouse"
-        android:scaleType="centerCrop"
-        android:adjustViewBounds="true"></ImageView>
-</FrameLayout>
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/checklistPhoto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/lighthouse"></ImageView>
+    </FrameLayout>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
         <TextView
             android:layout_width="match_parent"
-            android:text="The Baily Lighthouse"
-            android:textSize="15dp"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
+            android:text="The Baily Lighthouse"
+            android:textSize="15dp"
             android:textStyle="bold" />
-    <CheckBox
-        android:id="@+id/checklistAccessibility"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/checklist_accessibility" />
 
-    <CheckBox
-        android:id="@+id/checklistPower"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:checked="true"
-        android:text="@string/checklist_power" />
+        <CheckBox
+            android:id="@+id/checklistWc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/checklist_wc" />
 
-    <CheckBox
-        android:id="@+id/checklistSun"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/checklist_sun" />
+        <CheckBox
+            android:id="@+id/checklistWifi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/checklist_wifi" />
 
-    <CheckBox
-        android:id="@+id/checklistWc"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/checklist_wc" />
+        <CheckBox
+            android:id="@+id/checklistPower"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/checklist_power" />
 
-    <CheckBox
-        android:id="@+id/checklistWifi"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/checklist_wifi" />
+        <CheckBox
+            android:id="@+id/checklistAccessibility"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/checklist_accessibility" />
 
-    <Button
-        android:id="@+id/btnDisplay"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Add Location" />
+        <CheckBox
+            android:id="@+id/checklistSun"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/checklist_sun" />
 
-        </LinearLayout>
+        <Button
+            android:id="@+id/btnDisplay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add Location" />
+
+    </LinearLayout>
 </LinearLayout>
