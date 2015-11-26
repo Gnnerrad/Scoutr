@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
@@ -29,7 +30,6 @@ public class CameraActivity extends AppCompatActivity {
             ImageView imageView = (ImageView)findViewById(R.id.image_camera);
             ContentResolver cr = getContentResolver();
             Bitmap bitmap;
-
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(cr, imageUri);
                 imageView.setImageBitmap(bitmap);

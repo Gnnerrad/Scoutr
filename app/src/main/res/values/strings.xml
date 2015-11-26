@@ -7,7 +7,8 @@
     <string name="title_activity_camera">Camera</string>
     <string name="checklist_accessibility">Easily Accessible</string>
     <string name="checklist_power">Power Mains Available</string>
-    <string name="checklist_wc">Wash Closet Available</string>
-    <string name="checklist_wifi">Free Wifi Available</string>
+    <string name="checklist_wc">Wash Closet Nearby</string>
+    <string name="checklist_wifi">Free Wifi Nearby</string>
     <string name="checklist_sun">Optimal Sun Hours</string>
+    <string name="enter_location">Enter Location Name</string>
 </resources>

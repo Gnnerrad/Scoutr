@@ -12,7 +12,7 @@
         android:layout_height="135dp"
         android:src="@drawable/lighthouse"
         android:scaleType="centerCrop"
-        android:adjustViewBounds="true"></ImageView>
+        android:adjustViewBounds="true"/>
 </FrameLayout>
     <LinearLayout
         android:layout_width="wrap_content"
@@ -24,37 +24,37 @@
             android:id="@+id/popupTolietIcon"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:layout_weight="1"
-            android:src="@drawable/wc_icon"></ImageView>
+            android:layout_weight="1"/>
+            <!--android:src="@drawable/wc_icon"></ImageView>-->
 
         <ImageView
             android:id="@+id/popupWifiIcon"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:layout_weight="1"
-            android:src="@drawable/wifi_icon"></ImageView>
+            android:layout_weight="1"/>
+            <!--android:src="@drawable/wifi_icon"></ImageView>-->
 
         <ImageView
             android:id="@+id/popupPowerIcon"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:layout_weight="1"
-            android:src="@drawable/power_icon"></ImageView>
+            android:layout_weight="1"/>
+            <!--android:src="@drawable/power_icon"></ImageView>-->
 
         <ImageView
             android:id="@+id/popupAccesibilityIcon"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:layout_weight="1"
-            android:src="@drawable/accessibility_icon"></ImageView>
+            android:layout_weight="1"/>
+            <!--android:src="@drawable/accessibility_icon"></ImageView>-->
 
         <ImageView
             android:id="@+id/popupSunIcon"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:adjustViewBounds="true"
-            android:layout_weight="1"
-            android:src="@drawable/weather_icon"></ImageView>
+            android:layout_weight="1"/>
+            <!--android:src="@drawable/weather_icon"></ImageView>-->
 
     </LinearLayout>
     <LinearLayout

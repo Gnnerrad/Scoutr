@@ -12,10 +12,10 @@
         <ImageView
             android:id="@+id/checklistPhoto"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="250dp"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
-            android:src="@drawable/lighthouse"></ImageView>
+            android:src="@drawable/lighthouse"/>
     </FrameLayout>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -23,13 +23,14 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <TextView
+        <EditText
+            android:id="@+id/enter_location"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
-            android:text="The Baily Lighthouse"
-            android:textSize="15dp"
-            android:textStyle="bold" />
+            android:inputType="textCapWords"
+            android:textSize="20sp"
+            android:textStyle="bold"/>
 
         <CheckBox
             android:id="@+id/checklistWc"
@@ -60,12 +61,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/checklist_sun" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:text="Description"
+            android:layout_height="wrap_content" />
 
         <Button
             android:id="@+id/btnDisplay"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Add Location" />
-
     </LinearLayout>
 </LinearLayout>

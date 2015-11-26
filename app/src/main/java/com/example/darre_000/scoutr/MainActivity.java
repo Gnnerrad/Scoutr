@@ -12,6 +12,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -29,6 +30,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.File;
+import java.util.HashMap;
 
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -36,7 +38,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private GPSTracker gps;
     private Uri imageUri;
-    //    private HashMap<String, Bitmap> popupImgMap;
+    private HashMap<String, File> popupImgMap;
     private int imageCount;
     Bitmap bitmap;
 //    private CheckBox chkIos, chkAndroid, chkWindows;
@@ -62,7 +64,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public View getInfoContents(Marker marker) {
                 View v = getLayoutInflater().inflate(R.layout.custom_info_window, null);
-//                LatLng latLng = marker.getPosition();
+//              LatLng latLng = marker.getPosition();
                 TextView lat = (TextView) v.findViewById(R.id.latlng);
                 lat.setText(imageUri.toString());
                 ImageView locationPhoto = (ImageView) v.findViewById(R.id.locationPhoto);
@@ -72,12 +74,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         });
         mapFragment.getMapAsync(this);
 
-//        View topBar = findViewById(R.id.topBarLayout);
+//       View topBar = findViewById(R.id.topBarLayout);
 
         ImageButton cameraButton = (ImageButton) findViewById(R.id.cameraButton);
         cameraButton.setOnClickListener(camListener);
 
-//        SearchView searchView = (SearchView) findViewById(R.id.searchView);
+//      SearchView searchView = (SearchView) findViewById(R.id.searchView);
 
         ImageButton favourites = (ImageButton) findViewById(R.id.favourites);
         favourites.setOnClickListener(new View.OnClickListener() {
@@ -123,10 +125,14 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         String photoName = Double.toString(gps.getLongitude()) +
                 "_" + Double.toString(gps.getLatitude()) + "_" + imageCount + ".jpg";
 
-        File photo = new File(Environment.getExternalStorageDirectory(), photoName);
+
+        File photo = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), photoName);
+
+        //File photo = new File(Environment.getExternalStorageDirectory(), photoName);
         imageUri = Uri.fromFile(photo);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
         startActivityForResult(intent, 1);
+
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -152,29 +158,26 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             }
             else if(requestCode == 2) {
                 if (intent.getExtras() != null) {
-//                    if(intent.getExtras().getBoolean("wcChk")){
-//                        Drawable wc = (Drawable) (R.drawable.wc_icon);
-//                        if(wc == null){
-//                            Toast.makeText(MainActivity.this, "IT IS NULL", Toast.LENGTH_SHORT).show();
-//                        }
-////                        wc.setVisibility(View.INVISIBLE);
-//                    }
-////                    if(intent.getExtras().getBoolean("wifiChk")){
-////                        ImageView wifi = (ImageView) findViewById(R.id.popupWifiIcon);
-////                        wifi.setVisibility(View.INVISIBLE);
-////                    }
-////                    if(intent.getExtras().getBoolean("powerChk")){
-////                        ImageView power = (ImageView) findViewById(R.id.popupPowerIcon);
-////                        power.setVisibility(View.INVISIBLE);
-////                    }
-////                    if(intent.getExtras().getBoolean("accessCheck")){
-////                        ImageView access = (ImageView) findViewById(R.id.popupAccesibilityIcon);
-////                        access.setVisibility(View.INVISIBLE);
-////                    }
-////                    if(intent.getExtras().getBoolean("sunCheck")){
-////                        ImageView sun = (ImageView) findViewById(R.id.popupSunIcon);
-////                        sun.setVisibility(View.INVISIBLE);
-////                    }
+                    if(intent.getExtras().getBoolean("wcChk")){
+                        ImageView wc = (ImageView) findViewById(R.id.popupTolietIcon);
+                        wc.setBackgroundResource(R.drawable.wc_icon);
+                    }
+                    if(intent.getExtras().getBoolean("wifiChk")){
+                        ImageView wifi = (ImageView) findViewById(R.id.popupWifiIcon);
+                        wifi.setBackgroundResource(R.drawable.wifi_icon);
+                    }
+                    if(intent.getExtras().getBoolean("powerChk")){
+                        ImageView power = (ImageView) findViewById(R.id.popupPowerIcon);
+                        power.setBackgroundResource(R.drawable.power_icon);
+                    }
+                    if(intent.getExtras().getBoolean("accessCheck")){
+                        ImageView access = (ImageView) findViewById(R.id.popupAccesibilityIcon);
+                        access.setBackgroundResource(R.drawable.accessibility_icon);
+                    }
+                    if(intent.getExtras().getBoolean("sunCheck")){
+                        ImageView sun = (ImageView) findViewById(R.id.popupSunIcon);
+                        sun.setBackgroundResource(R.drawable.weather_icon);
+                    }
                     addMarkerForPicture();
                 }
                 else{
@@ -192,38 +195,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 //                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin))
 //                        .snippet(Integer.toHexString(imageCount))
 //        );
-//        Marker marker1 = mMap.addMarker(new MarkerOptions()
-//                        .title("King Charles")
-//                        .position(new LatLng(53.3860,-8.0660))
-//                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin))
-//                        .snippet(Integer.toHexString(imageCount))
-//        );
 //
-//        Marker marker6 = mMap.addMarker(new MarkerOptions()
-//                        .title("King Charles")
-//                        .position(new LatLng(53.3860,-7.0660))
-//                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin))
-//                        .snippet(Integer.toHexString(imageCount))
-//        );
-//        Marker marker2 = mMap.addMarker(new MarkerOptions()
-//                        .title("King Charles")
-//                        .position(new LatLng(52.3860,-3.0660))
-//                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin))
-//                        .snippet(Integer.toHexString(imageCount))
-//        );
-//
-//        Marker marker4 = mMap.addMarker(new MarkerOptions()
-//                        .title("King Charles")
-//                        .position(new LatLng(53.3860,-6.0660))
-//                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin))
-//                        .snippet(Integer.toHexString(imageCount))
-//        );
-//        Marker marker9 = mMap.addMarker(new MarkerOptions()
-//                        .title("King Charles")
-//                        .position(new LatLng(53.3860,-6.0660))
-//                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin))
-//                        .snippet(Integer.toHexString(imageCount))
-//        );
     }
 
     protected void addMarkerForPicture() {
@@ -237,7 +209,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin))
                             .snippet(Integer.toHexString(imageCount))
             );
-            marker.showInfoWindow();
+            //marker.showInfoWindow();
             imageCount++;
         } else {
             //The alert popup idea comes from the second response of http://stackoverflow.com/questions/2478517/how-to-display-a-yes-no-dialog-box-in-android
