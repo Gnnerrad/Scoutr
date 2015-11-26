@@ -10,9 +10,8 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
-import android.widget.Toast;
 
-public class CheckBoxActivity extends AppCompatActivity{
+public class CheckBoxActivity extends AppCompatActivity {
 
     private CheckBox chk1, chk2, chk3, chk4, chk5;
     private Button btnDisplay;
@@ -53,12 +52,9 @@ public class CheckBoxActivity extends AppCompatActivity{
                 intent.putExtra("wcChk", chk1.isChecked());
                 intent.putExtra("wifiChk", chk2.isChecked());
                 intent.putExtra("powerChk", chk3.isChecked());
-                intent.putExtra("accessCheck", chk4.isChecked());
-                intent.putExtra("sunCheck", chk5.isChecked());
+                intent.putExtra("accessChk", chk4.isChecked());
+                intent.putExtra("sunChk", chk5.isChecked());
                 setResult(Activity.RESULT_OK, intent);
-                if (intent.getExtras() == null) {
-                    Toast.makeText(CheckBoxActivity.this, "Intent is empty even before return", Toast.LENGTH_SHORT).show();
-                }
                 finish();
             }
         });

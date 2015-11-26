@@ -83,8 +83,34 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     sun.setImageURI(Uri.parse("android.resource://com.example.darre_000.scoutr/drawable/weather_icon"));
                 }
                 TextView lat = (TextView) v.findViewById(R.id.latlng);
-                lat.setText("THIS SHOULD WORK");
+//              lat.setText("Humpty Dumpty sat on a wall,\n" +
+//                        "Humpty Dumpty had a great fall;\n" +
+//                        "All the king's horses and all the king's men\n" +
+//                        "Couldn't put Humpty together again.");
                 ImageView locationPhoto = (ImageView) v.findViewById(R.id.locationPhoto);
+                int targetW = locationPhoto.getWidth();
+                int targetH = locationPhoto.getHeight();
+
+                lat.setText(marker.getSnippet()+"\n"+targetW+"*"+targetH);
+
+                // Get the dimensions of the bitmap
+//                BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+//                bmOptions.inJustDecodeBounds = true;
+//                BitmapFactory.decodeFile(imageUri.toString(), bmOptions);
+//                int photoW = bmOptions.outWidth;
+//                int photoH = bmOptions.outHeight;
+//
+//                // Determine how much to scale down the image
+//                int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
+//
+//                // Decode the image file into a Bitmap sized to fill the View
+//                bmOptions.inJustDecodeBounds = false;
+//                bmOptions.inSampleSize = scaleFactor;
+//                bmOptions.inPurgeable = true;
+//
+//                Bitmap bitmap = BitmapFactory.decodeFile(imageUri.toString(), bmOptions);
+//                locationPhoto.setImageBitmap(bitmap);
+
                 locationPhoto.setImageURI(imageUri);
                 return v;
             }
@@ -169,7 +195,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 Intent photoCheckbox = new Intent(this, CheckBoxActivity.class);
                 photoCheckbox.putExtra("imageUri", imageUri.toString());
                 startActivityForResult(photoCheckbox, 2);
-            } else if (requestCode == 2) {
+            }
+            else if (requestCode == 2) {
                 if (intent.getExtras() != null) {
                     addMarkerForPicture(intent.getExtras().getBoolean("wcChk"),
                             intent.getExtras().getBoolean("wifiChk"),
