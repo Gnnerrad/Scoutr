@@ -64,8 +64,28 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
             @Override
             public View getInfoContents(Marker marker) {
+                String booleans[] = marker.getSnippet().split(" ");
                 View v = getLayoutInflater().inflate(R.layout.custom_info_window, null);
-//              LatLng latLng = marker.getPosition();
+                if (booleans[0].equals("true")) {
+                    ImageView wc = (ImageView) v.findViewById(R.id.popupTolietIcon);
+                    wc.setImageURI(Uri.parse("android.resource://com.example.darre_000.scoutr/drawable/wc_icon"));
+                }
+                if (booleans[1].equals("true")) {
+                    ImageView wifi = (ImageView) v.findViewById(R.id.popupWifiIcon);
+                    wifi.setImageURI(Uri.parse("android.resource://com.example.darre_000.scoutr/drawable/wifi_icon"));
+                }
+                if (booleans[2].equals("true")) {
+                    ImageView power = (ImageView) v.findViewById(R.id.popupPowerIcon);
+                    power.setImageURI(Uri.parse("android.resource://com.example.darre_000.scoutr/drawable/power_icon"));
+                }
+                if (booleans[3].equals("true")) {
+                    ImageView access = (ImageView) v.findViewById(R.id.popupAccesibilityIcon);
+                    access.setImageURI(Uri.parse("android.resource://com.example.darre_000.scoutr/drawable/accessibility_icon"));
+                }
+                if (booleans[4].equals("true")) {
+                    ImageView sun = (ImageView) v.findViewById(R.id.popupSunIcon);
+                    sun.setImageURI(Uri.parse("android.resource://com.example.darre_000.scoutr/drawable/weather_icon"));
+                }
                 TextView lat = (TextView) v.findViewById(R.id.latlng);
                 lat.setText(imageUri.toString());
                 ImageView locationPhoto = (ImageView) v.findViewById(R.id.locationPhoto);
@@ -75,12 +95,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         });
         mapFragment.getMapAsync(this);
 
-//       View topBar = findViewById(R.id.topBarLayout);
+//        View topBar = findViewById(R.id.topBarLayout);
 
         ImageButton cameraButton = (ImageButton) findViewById(R.id.cameraButton);
         cameraButton.setOnClickListener(camListener);
 
-//      SearchView searchView = (SearchView) findViewById(R.id.searchView);
+//        SearchView searchView = (SearchView) findViewById(R.id.searchView);
 
         ImageButton favourites = (ImageButton) findViewById(R.id.favourites);
         favourites.setOnClickListener(new View.OnClickListener() {
@@ -155,7 +175,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 try {
                     bitmap = MediaStore.Images.Media.getBitmap(cr, imageUri);
                     imageView.setImageBitmap(bitmap);
-                } catch (Exception e) {}
+                } catch (Exception e) {
+                }
 
                 Intent photoCheckbox = new Intent(this, CheckBoxActivity.class);
                 photoCheckbox.putExtra("imageUri", imageUri.toString());
@@ -194,16 +215,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     public void onMapReady(GoogleMap googleMap) {
-//        Marker marker = mMap.addMarker(new MarkerOptions()
-//                        .title("King Charles")
-//                        .position(new LatLng(53.3860,-6.0660))
-//                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin))
-//                        .snippet(Integer.toHexString(imageCount))
-//        );
-//
     }
 
-    protected void addMarkerForPicture() {
+    protected void addMarkerForPicture(boolean wcBool, boolean wifiBool, boolean powerBool, boolean accessBool, boolean sunBool) {
         if (gps.canGetLocation) {
             LatLng currentLocation = new LatLng(gps.getLatitude(), gps.getLongitude());
             mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
@@ -212,7 +226,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                             .title("King Charles")
                             .position(currentLocation)
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin))
-                            .snippet(Integer.toHexString(imageCount))
+                            .snippet(wcBool + " " + wifiBool + " " + powerBool + " " + accessBool + " " + sunBool)
             );
             //marker.showInfoWindow();
 
@@ -255,6 +269,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             builder.setMessage("Location services must be enabled to drop a new pin.\nWould you like to enable location services now?")
                     .setPositiveButton("Yes", enableGpsClickListener)
                     .setNegativeButton("No", enableGpsClickListener).show();
+
+            addMarkerForPicture(wcBool, wifiBool, powerBool, accessBool, sunBool);
         }
     }
 }
