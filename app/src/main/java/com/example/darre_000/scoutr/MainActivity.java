@@ -38,7 +38,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private GPSTracker gps;
     private Uri imageUri;
-    private HashMap<String, File> popupImgMap;
+    //private HashMap<String, File> popupImgMap = new HashMap<>();
+    private HashMap<String, String> popupImgMap = new HashMap<>();
     private int imageCount;
     Bitmap bitmap;
 //    private CheckBox chkIos, chkAndroid, chkWindows;
@@ -133,6 +134,10 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
         startActivityForResult(intent, 1);
 
+        //popupImgMap.put(ts, photo);
+        popupImgMap.put("m"+imageCount, photoName);
+        Log.d(Integer.toString(imageCount), "SPOCK");
+        //Log.d(popupImgMap.toString(),"slkdjafklajsdflkjaskldfjalksdjflkjasdf");
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -210,7 +215,22 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                             .snippet(Integer.toHexString(imageCount))
             );
             //marker.showInfoWindow();
+
+            mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                @Override
+                public boolean onMarkerClick(Marker marker) {
+                    Log.d(popupImgMap.get(marker.getId()),marker.getId());
+
+                    String photoName = popupImgMap.get(marker.getId());
+                    File photo = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), photoName);
+                    imageUri = Uri.fromFile(photo);
+
+                    marker.showInfoWindow();
+                    return true;
+                }
+            });
             imageCount++;
+            Log.d(popupImgMap.toString(), "\naijshdfl;kasjdklfjalkjdsklajslkdfjs");
         } else {
             //The alert popup idea comes from the second response of http://stackoverflow.com/questions/2478517/how-to-display-a-yes-no-dialog-box-in-android
             DialogInterface.OnClickListener enableGpsClickListener = new DialogInterface.OnClickListener() {
