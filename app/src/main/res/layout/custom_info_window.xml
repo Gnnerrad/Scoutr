@@ -11,7 +11,8 @@
             android:id="@+id/locationPhoto"
             android:layout_width="240dp"
             android:layout_height="135dp"
-            android:src="@drawable/lighthouse"></ImageView>
+            android:scaleType="fitXY"
+            android:src="@drawable/lighthouse"/>
     </FrameLayout>
 
     <LinearLayout
@@ -24,32 +25,32 @@
             android:id="@+id/popupTolietIcon"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:layout_weight="1"></ImageView>
+            android:layout_weight="1"/>
 
         <ImageView
             android:id="@+id/popupWifiIcon"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:layout_weight="1"></ImageView>
+            android:layout_weight="1"/>
 
         <ImageView
             android:id="@+id/popupPowerIcon"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:layout_weight="1"></ImageView>
+            android:layout_weight="1"/>
 
         <ImageView
             android:id="@+id/popupAccesibilityIcon"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:layout_weight="1"></ImageView>
+            android:layout_weight="1"/>
 
         <ImageView
             android:id="@+id/popupSunIcon"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_weight="1"
-            android:adjustViewBounds="true"></ImageView>
+            android:adjustViewBounds="true"/>
     </LinearLayout>
 
     <LinearLayout

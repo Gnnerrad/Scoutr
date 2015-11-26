@@ -3,8 +3,10 @@ package com.example.darre_000.scoutr;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,7 +21,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -34,21 +35,36 @@ import java.util.HashMap;
 
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback {
-    //charles has been here
     private GoogleMap mMap;
     private GPSTracker gps;
     private Uri imageUri;
-    //private HashMap<String, File> popupImgMap = new HashMap<>();
     private HashMap<String, String> popupImgMap = new HashMap<>();
     private int imageCount;
     Bitmap bitmap;
-//    private CheckBox chkIos, chkAndroid, chkWindows;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+//        ScoutrDBHelper dbHelper = new ScoutrDBHelper(getApplicationContext());
+//        SQLiteDatabase db = dbHelper.getWritableDatabase();
+//
+//        ContentValues values = new ContentValues();
+//        values.put(ScoutrDBContract.Table.LATITUDE, "234234534");
+//        values.put(ScoutrDBContract.Table.LONGITUDE, "23545645");
+//
+//        long newRowId;
+//        newRowId = db.insert(
+//                ScoutrDBContract.Table.TABLE_NAME,
+//                null,
+//                values
+//        );
+
+
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -95,12 +111,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         });
         mapFragment.getMapAsync(this);
 
-//        View topBar = findViewById(R.id.topBarLayout);
 
         ImageButton cameraButton = (ImageButton) findViewById(R.id.cameraButton);
         cameraButton.setOnClickListener(camListener);
-
-//        SearchView searchView = (SearchView) findViewById(R.id.searchView);
 
         ImageButton favourites = (ImageButton) findViewById(R.id.favourites);
         favourites.setOnClickListener(new View.OnClickListener() {
@@ -124,7 +137,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "A menu or somthing....", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "A menu", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
@@ -149,15 +162,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         File photo = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), photoName);
 
-        //File photo = new File(Environment.getExternalStorageDirectory(), photoName);
         imageUri = Uri.fromFile(photo);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
         startActivityForResult(intent, 1);
 
-        //popupImgMap.put(ts, photo);
         popupImgMap.put("m"+imageCount, photoName);
         Log.d(Integer.toString(imageCount), "SPOCK");
-        //Log.d(popupImgMap.toString(),"slkdjafklajsdflkjaskldfjalksdjflkjasdf");
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -204,7 +214,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                         ImageView sun = (ImageView) findViewById(R.id.popupSunIcon);
                         sun.setBackgroundResource(R.drawable.weather_icon);
                     }
-                    addMarkerForPicture();
+                    addMarkerForPicture(intent.getExtras().getBoolean("wcChk"),
+                            intent.getExtras().getBoolean("wifiChk"),
+                            intent.getExtras().getBoolean("powerChk"),
+                            intent.getExtras().getBoolean("accessChk"),
+                            intent.getExtras().getBoolean("sunChk"));
                 }
                 else{
                     Toast.makeText(MainActivity.this, "checkBox Intent is null", Toast.LENGTH_SHORT).show();
@@ -255,7 +269,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                             Intent gpsOptionsIntent = new Intent(
                                     android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                             startActivity(gpsOptionsIntent);
-                            addMarkerForPicture();
+                            //addMarkerForPicture();
                             break;
 
                         case DialogInterface.BUTTON_NEGATIVE:
