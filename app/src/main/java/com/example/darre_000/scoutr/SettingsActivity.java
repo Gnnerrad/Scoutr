@@ -49,7 +49,7 @@ public class SettingsActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.this);
-            builder.setMessage("This would allow the user to set the radius at which nearby pin will be loaded.")
+            builder.setMessage("This would allow the user to set the radius at which nearby pins will be loaded.")
                     .setNeutralButton("Dismiss", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();

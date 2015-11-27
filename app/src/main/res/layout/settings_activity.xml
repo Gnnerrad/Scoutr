@@ -67,11 +67,6 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="My Account" />
-            <CheckBox
-                android:id="@+id/menuCheckBox"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="Save photos locally"/>
 
             <Button
                 android:id="@+id/menuFavourites"
@@ -79,11 +74,11 @@
                 android:layout_height="wrap_content"
                 android:text="Clear Favourites" />
         </LinearLayout>
-        <Button
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:layout_width="fill_parent"
+
+        <CheckBox
+            android:id="@+id/menuCheckBox"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Save Settings."/>
+            android:text="Save photos locally"/>
     </LinearLayout>
 </LinearLayout>

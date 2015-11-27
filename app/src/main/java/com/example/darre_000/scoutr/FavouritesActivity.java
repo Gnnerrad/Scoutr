@@ -24,10 +24,11 @@ public class FavouritesActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             AlertDialog.Builder builder = new AlertDialog.Builder(FavouritesActivity.this);
-            builder.setMessage("As the database is local photos must be save to the phone so this checkBox is purly astectic.")
+            builder.setMessage("This button shpould save the savourites")
                     .setNeutralButton("Dismiss", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
+                            finish();
                         }
                     }).show();
         }

@@ -18,7 +18,6 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentActivity;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -258,7 +257,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 if (intent.getExtras().getString("popUpTitle") == null) {
                     Toast.makeText(MainActivity.this, "null", Toast.LENGTH_LONG).show();
                 } else if (intent.getExtras().getString("popUpTitle").equals("")) {
-                    Toast.makeText(MainActivity.this, "result Empty", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, "Result Empty", Toast.LENGTH_LONG).show();
                     Intent photoCheckbox = new Intent(this, CheckBoxActivity.class);
                     photoCheckbox.putExtra("imageUri", imageUri.toString());
                     startActivityForResult(photoCheckbox, 2);
