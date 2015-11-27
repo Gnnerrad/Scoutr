@@ -39,10 +39,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private GPSTracker gps;
     private Uri imageUri;
-    private HashMap<String, String> popupImgMap = new HashMap<>();
-    private int imageCount;
     Bitmap bitmap;
     ScoutrDBHelper ScoutrDb;
+    String currentLocationPhotoName;
 
 
     @Override
@@ -57,7 +56,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mMap = mapFragment.getMap();
-        imageCount = 0;
         mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
 
             //taken from http://stackoverflow.com/questions/15090148/custom-info-window-adapter-with-custom-data-in-map-v2
@@ -181,18 +179,16 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         Long tsLong = System.currentTimeMillis() / 1000;
         String ts = tsLong.toString();
 
-        String photoName = Double.toString(gps.getLongitude()) +
-                "_" + Double.toString(gps.getLatitude()) + "_" + imageCount + ".jpg";
+        currentLocationPhotoName = Double.toString(gps.getLongitude()) +
+                "_" + Double.toString(gps.getLatitude()) + ".jpg";
 
 
-        File photo = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), photoName);
+        File photo = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), currentLocationPhotoName);
 
         imageUri = Uri.fromFile(photo);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
         startActivityForResult(intent, 1);
 
-        popupImgMap.put("m" + imageCount, photoName);
-        Log.d(Integer.toString(imageCount), "SPOCK");
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -266,7 +262,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     protected void addMarkerForPicture(boolean wcBool, boolean wifiBool, boolean powerBool, boolean accessBool, boolean sunBool) {
         if (gps.canGetLocation) {
-            LatLng currentLocation = new LatLng(gps.getLatitude(), gps.getLongitude());
+            final LatLng currentLocation = new LatLng(gps.getLatitude(), gps.getLongitude());
             mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
             mMap.moveCamera(CameraUpdateFactory.zoomIn());
             Marker marker = mMap.addMarker(new MarkerOptions()
@@ -277,7 +273,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             );
             //marker.showInfoWindow();
             boolean isInserted = ScoutrDb.insertData(
-                    Integer.toString(imageCount),
+                    marker.getPosition().toString(),
                     "location name",
                     Double.toString(currentLocation.latitude),
                     Double.toString(currentLocation.longitude),
@@ -285,7 +281,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     Boolean.toString(wifiBool),
                     Boolean.toString(powerBool),
                     Boolean.toString(accessBool),
-                    Boolean.toString(sunBool));
+                    Boolean.toString(sunBool),
+                    currentLocationPhotoName);
 
 
             if(isInserted)
@@ -293,16 +290,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             Cursor res = ScoutrDb.getAllData();
             StringBuffer buffer = new StringBuffer();
             while(res.moveToNext()){
-                buffer.append(res.getString(0) + "\n");
-                buffer.append(res.getString(1) + "\n");
-                buffer.append(res.getString(2) + "\n");
-                buffer.append(res.getString(3) + "\n");
-                buffer.append(res.getString(4) + "\n");
-                buffer.append(res.getString(5) + "\n");
-                buffer.append(res.getString(6) + "\n");
-                buffer.append(res.getString(7) + "\n");
-                buffer.append(res.getString(8) + "\n");
+                for (int i=0;i<10;i++){
+                    buffer.append(res.getString(i) + "\n");
+                }
             }
+
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setCancelable(true);
@@ -312,9 +304,17 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                 @Override
                 public boolean onMarkerClick(Marker marker) {
-                    Log.d(popupImgMap.get(marker.getId()),marker.getId());
+                    Cursor res = ScoutrDb.getAllData();
+                    marker.getPosition();
 
-                    String photoName = popupImgMap.get(marker.getId());
+                    while(res.moveToNext()){
+                        if(res.getString(0).equals(marker.getPosition().toString())){
+                            Toast.makeText(MainActivity.this, res.getString(0), Toast.LENGTH_SHORT).show();
+                            break;
+                        }
+                    }
+                    String photoName = res.getString(9);
+
                     File photo = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), photoName);
                     imageUri = Uri.fromFile(photo);
 
@@ -322,8 +322,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     return true;
                 }
             });
-            imageCount++;
-            Log.d(popupImgMap.toString(), "\naijshdfl;kasjdklfjalkjdsklajslkdfjs");
         } else {
             //The alert popup idea comes from the second response of http://stackoverflow.com/questions/2478517/how-to-display-a-yes-no-dialog-box-in-android
             DialogInterface.OnClickListener enableGpsClickListener = new DialogInterface.OnClickListener() {

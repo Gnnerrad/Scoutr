@@ -18,6 +18,7 @@ public class ScoutrDBHelper extends SQLiteOpenHelper {
     public static final String COL_7 = "POWER";
     public static final String COL_8 = "ACCESSIBILITY";
     public static final String COL_9 = "SUNLIGHT";
+    public static final String COL_10 = "FILEPATH";
 
     public ScoutrDBHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
@@ -28,7 +29,7 @@ public class ScoutrDBHelper extends SQLiteOpenHelper {
 //        db.execSQL("create table " + TABLE_NAME + " (ID INTEGER PRIMARY KEY," +
 //                "NAME TEXT,LAT TEXT,LONG TEXT,WC BOOLEAN,WIFI BOOLEAN,POWER BOOLEAN" +
 //                "ACCESSIBILITY BOOLEAN,SUNLIGHT BOOLEAN)");
-        db.execSQL("create table " + TABLE_NAME + " (ID INTEGER PRIMARY KEY," +
+        db.execSQL("create table " + TABLE_NAME + " (ID TEXT PRIMARY KEY," +
                                                     "NAME TEXT," +
                                                     "LAT TEXT," +
                                                     "LONG TEXT," +
@@ -36,7 +37,8 @@ public class ScoutrDBHelper extends SQLiteOpenHelper {
                                                     "WIFI BOOLEAN," +
                                                     "POWER BOOLEAN," +
                                                     "ACCESSIBILITY BOOLEAN," +
-                                                    "SUNLIGHT BOOLEAN" +
+                                                    "SUNLIGHT BOOLEAN," +
+                                                    "FILEPATH TEXT" +
                                                     ")");
     }
 
@@ -47,7 +49,8 @@ public class ScoutrDBHelper extends SQLiteOpenHelper {
     }
 
     public boolean insertData(String id, String name,String lat, String lng, String wc,
-                              String wifi,String power, String access,String sunlight){
+                              String wifi,String power, String access,String sunlight,
+                              String filepath){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL_1,id);
@@ -59,6 +62,7 @@ public class ScoutrDBHelper extends SQLiteOpenHelper {
         contentValues.put(COL_7,power);
         contentValues.put(COL_8,access);
         contentValues.put(COL_9,sunlight);
+        contentValues.put(COL_10,filepath);
         long result = db.insert(TABLE_NAME,null,contentValues);
         if(result==-1){
             return false;
@@ -68,7 +72,8 @@ public class ScoutrDBHelper extends SQLiteOpenHelper {
     }
 
     public boolean updateData(String id, String name,String lat, String lng, String wc,
-                              String wifi,String power, String access,String sunlight){
+                              String wifi,String power, String access,String sunlight,
+                              String filepath){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL_1,id);
@@ -80,6 +85,7 @@ public class ScoutrDBHelper extends SQLiteOpenHelper {
         contentValues.put(COL_7,power);
         contentValues.put(COL_8,access);
         contentValues.put(COL_9,sunlight);
+        contentValues.put(COL_10,filepath);
         long result = db.update(TABLE_NAME, contentValues, "ID = ?", new String[]{id});
         if(result==-1){
             return false;
