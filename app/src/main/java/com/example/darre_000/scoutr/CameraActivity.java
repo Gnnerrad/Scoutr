@@ -16,7 +16,6 @@ import android.widget.ImageView;
 public class CameraActivity extends AppCompatActivity {
 
     private  static  String logTrack = "CameraAppLog";
-    private static int PICTURE_TAKE = 1;
     private Uri imageUri;
 
     @Override

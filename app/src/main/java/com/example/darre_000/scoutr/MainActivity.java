@@ -6,6 +6,7 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -33,7 +34,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.io.File;
 import java.util.HashMap;
 
-
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback {
     private GoogleMap mMap;
     private GPSTracker gps;
@@ -41,28 +41,41 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     private HashMap<String, String> popupImgMap = new HashMap<>();
     private int imageCount;
     Bitmap bitmap;
+    ScoutrDBHelper ScoutrDb;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ScoutrDb = new ScoutrDBHelper(this);
+        boolean isInserted = ScoutrDb.insertData("2",Boolean.toString(true),Boolean.toString(true),
+                                                     Boolean.toString(true),Boolean.toString(true),
+                                                     Boolean.toString(true),Boolean.toString(true),
+                                                     Boolean.toString(true),Boolean.toString(true));
 
 
-//        ScoutrDBHelper dbHelper = new ScoutrDBHelper(getApplicationContext());
-//        SQLiteDatabase db = dbHelper.getWritableDatabase();
-//
-//        ContentValues values = new ContentValues();
-//        values.put(ScoutrDBContract.Table.LATITUDE, "234234534");
-//        values.put(ScoutrDBContract.Table.LONGITUDE, "23545645");
-//
-//        long newRowId;
-//        newRowId = db.insert(
-//                ScoutrDBContract.Table.TABLE_NAME,
-//                null,
-//                values
-//        );
+        if(isInserted)
+            Toast.makeText(this,"Data inserted", Toast.LENGTH_LONG).show();
+        Cursor res = ScoutrDb.getAllData();
+        StringBuffer buffer = new StringBuffer();
+        while(res.moveToNext()){
+            buffer.append(res.getString(0) + "\n");
+            buffer.append(res.getString(1) + "\n");
+            buffer.append(res.getString(2) + "\n");
+            buffer.append(res.getString(3) + "\n");
+            buffer.append(res.getString(4) + "\n");
+            buffer.append(res.getString(5) + "\n");
+            buffer.append(res.getString(6) + "\n");
+            buffer.append(res.getString(7) + "\n");
+            buffer.append(res.getString(8) + "\n");
+        }
 
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        builder.setTitle("ALL DATA");
+        builder.setMessage(buffer.toString());
+        builder.show();
 
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -81,6 +94,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public View getInfoContents(Marker marker) {
                 String booleans[] = marker.getSnippet().split(" ");
+
                 View v = getLayoutInflater().inflate(R.layout.custom_info_window, null);
                 if (booleans[0].equals("true")) {
                     ImageView wc = (ImageView) v.findViewById(R.id.popupTolietIcon);
@@ -194,34 +208,39 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             }
             else if(requestCode == 2) {
                 if (intent.getExtras() != null) {
-                    if(intent.getExtras().getBoolean("wcChk")){
-                        ImageView wc = (ImageView) findViewById(R.id.popupTolietIcon);
-                        wc.setBackgroundResource(R.drawable.wc_icon);
-                    }
-                    if(intent.getExtras().getBoolean("wifiChk")){
-                        ImageView wifi = (ImageView) findViewById(R.id.popupWifiIcon);
-                        wifi.setBackgroundResource(R.drawable.wifi_icon);
-                    }
-                    if(intent.getExtras().getBoolean("powerChk")){
-                        ImageView power = (ImageView) findViewById(R.id.popupPowerIcon);
-                        power.setBackgroundResource(R.drawable.power_icon);
-                    }
-                    if(intent.getExtras().getBoolean("accessCheck")){
-                        ImageView access = (ImageView) findViewById(R.id.popupAccesibilityIcon);
-                        access.setBackgroundResource(R.drawable.accessibility_icon);
-                    }
-                    if(intent.getExtras().getBoolean("sunCheck")){
-                        ImageView sun = (ImageView) findViewById(R.id.popupSunIcon);
-                        sun.setBackgroundResource(R.drawable.weather_icon);
-                    }
+
+                    //This code is actually redundant. pull to get newer version
+
+
+
+//                    if(intent.getExtras().getBoolean("wcChk")){
+//                        ImageView wc = (ImageView) findViewById(R.id.popupTolietIcon);
+//                        wc.setBackgroundResource(R.drawable.wc_icon);
+//                    }
+//                    if(intent.getExtras().getBoolean("wifiChk")){
+//                        ImageView wifi = (ImageView) findViewById(R.id.popupWifiIcon);
+//                        wifi.setBackgroundResource(R.drawable.wifi_icon);
+//                    }
+//                    if(intent.getExtras().getBoolean("powerChk")){
+//                        ImageView power = (ImageView) findViewById(R.id.popupPowerIcon);
+//                        power.setBackgroundResource(R.drawable.power_icon);
+//                    }
+//                    if(intent.getExtras().getBoolean("accessCheck")){
+//                        ImageView access = (ImageView) findViewById(R.id.popupAccesibilityIcon);
+//                        access.setBackgroundResource(R.drawable.accessibility_icon);
+//                    }
+//                    if(intent.getExtras().getBoolean("sunCheck")){
+//                        ImageView sun = (ImageView) findViewById(R.id.popupSunIcon);
+//                        sun.setBackgroundResource(R.drawable.weather_icon);
+//                    }
                     addMarkerForPicture(intent.getExtras().getBoolean("wcChk"),
                             intent.getExtras().getBoolean("wifiChk"),
                             intent.getExtras().getBoolean("powerChk"),
                             intent.getExtras().getBoolean("accessChk"),
                             intent.getExtras().getBoolean("sunChk"));
-                }
-                else{
-                    Toast.makeText(MainActivity.this, "checkBox Intent is null", Toast.LENGTH_SHORT).show();
+//                }
+//                else{
+//                    Toast.makeText(MainActivity.this, "checkBox Intent is null", Toast.LENGTH_SHORT).show();
                 }
             }
         }
