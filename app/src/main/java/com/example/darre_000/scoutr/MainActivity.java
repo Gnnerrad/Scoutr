@@ -1,5 +1,10 @@
 package com.example.darre_000.scoutr;
 
+// This is the main activity it handles all of the apps main functionality.
+// It consists of a map fragment on which everything is built, an object that
+// adds to the database, numerous click listeners that query the database and
+// update values accordingly.
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
@@ -13,17 +18,21 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentActivity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.SearchView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -38,14 +47,44 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     Bitmap bitmap;
     ScoutrDBHelper ScoutrDb;
     String currentLocationPhotoName;
+    SearchView searchBar;
 
-
+    //sets up environment for app. Search bar listener, sets up database,
+    //sets up markers etc.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ScoutrDb = new ScoutrDBHelper(this);
 
+        searchBar = (SearchView) findViewById(R.id.searchView);
+        searchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Cursor res = ScoutrDb.getAllData();
+
+                while(res.moveToNext()){
+                    if(res.getString(1).equals(query)){
+                        double lat = Double.parseDouble(res.getString(2));
+                        double lng = Double.parseDouble(res.getString(3));
+                        CameraPosition camPos = new CameraPosition.Builder()
+                                .target(new LatLng(lat, lng))
+                                .zoom(18)
+                                .build();
+                        CameraUpdate camUpd3 = CameraUpdateFactory.newCameraPosition(camPos);
+                        mMap.animateCamera(camUpd3);
+                        break;
+                    }
+                }
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                onQueryTextSubmit(newText);
+                return false;
+            }
+        });
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -133,7 +172,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             startActivity(settings);
         }
     };
-
+    // camera listener for camera button press also get values return from gps tracker
     private View.OnClickListener camListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -169,7 +208,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             takeLocationPhoto(v);
         }
     };
-
+    // self
     private void takeLocationPhoto(View v) {
         gps = new GPSTracker(MainActivity.this);
         Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
@@ -187,7 +226,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
         startActivityForResult(intent, 1);
     }
-
+    //handles the return values of an activity
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(resultCode, resultCode, intent);
 
@@ -235,7 +274,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void onMapReady(GoogleMap googleMap) {
     }
-
+    // adds marker to map fragment with meta data
     protected void addMarkerForPicture(boolean wcBool, boolean wifiBool, boolean powerBool, boolean accessBool, boolean sunBool, String markerTitle) {
         if (gps.canGetLocation) {
             LatLng currentLocation = new LatLng(gps.getLatitude(), gps.getLongitude());
@@ -281,9 +320,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     Cursor res = ScoutrDb.getAllData();
                     marker.getPosition();
 
-                    while (res.moveToNext()) {
-                        if (res.getString(0).equals(marker.getPosition().toString())) {
-                            Toast.makeText(MainActivity.this, res.getString(0), Toast.LENGTH_SHORT).show();
+                    while(res.moveToNext()){
+                        if(res.getString(0).equals(marker.getPosition().toString())){
+                            Toast.makeText(MainActivity.this, res.getString(1), Toast.LENGTH_SHORT).show();
                             break;
                         }
                     }
