@@ -47,7 +47,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         ScoutrDb = new ScoutrDBHelper(this);
 
 
-
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -103,13 +102,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         cameraButton.setOnClickListener(camListener);
 
         ImageButton favourites = (ImageButton) findViewById(R.id.favourites);
-        favourites.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "This links to favourite locations", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        favourites.setOnClickListener(favouritesListner);
 
         Button scoutrButton = (Button) findViewById(R.id.scoutr_social_network);
         scoutrButton.setOnClickListener(new View.OnClickListener() {
@@ -123,6 +116,15 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         ImageButton menu = (ImageButton) findViewById(R.id.bottomMenuButton);
         menu.setOnClickListener(settingListener);
     }
+
+
+    private View.OnClickListener favouritesListner = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent favouritesIntent = new Intent(MainActivity.this, FavouritesActivity.class);
+            startActivity(favouritesIntent);
+        }
+    };
 
     private View.OnClickListener settingListener = new View.OnClickListener() {
         @Override
@@ -176,7 +178,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         String ts = tsLong.toString();
 
         currentLocationPhotoName = Double.toString(gps.getLongitude()) +
-                "_" + Double.toString(gps.getLatitude())+ ".jpg";
+                "_" + Double.toString(gps.getLatitude()) + ".jpg";
 
 
         File photo = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), currentLocationPhotoName);
@@ -214,16 +216,15 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                         accesBool = intent.getExtras().getBoolean("accessChk"),
                         sunBool = intent.getExtras().getBoolean("sunChk");
 
-                if (intent.getExtras().getString("popUpTitle") == null){
+                if (intent.getExtras().getString("popUpTitle") == null) {
                     Toast.makeText(MainActivity.this, "null", Toast.LENGTH_LONG).show();
-                }
-                else if(intent.getExtras().getString("popUpTitle").equals("")) {
+                } else if (intent.getExtras().getString("popUpTitle").equals("")) {
                     Toast.makeText(MainActivity.this, "result Empty", Toast.LENGTH_LONG).show();
                     Intent photoCheckbox = new Intent(this, CheckBoxActivity.class);
                     photoCheckbox.putExtra("imageUri", imageUri.toString());
                     startActivityForResult(photoCheckbox, 2);
                 } else {
-                      String markerTitle = intent.getExtras().getString("popUpTitle");
+                    String markerTitle = intent.getExtras().getString("popUpTitle");
                     Toast.makeText(MainActivity.this, markerTitle, Toast.LENGTH_SHORT).show();
                     addMarkerForPicture(wcBool, wifiBool, powerBool, accesBool, sunBool, markerTitle);
                 }
@@ -259,12 +260,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     Boolean.toString(sunBool),
                     currentLocationPhotoName);
 
-            if(isInserted)
-                Toast.makeText(this,"Data inserted", Toast.LENGTH_LONG).show();
+            if (isInserted)
+                Toast.makeText(this, "Data inserted", Toast.LENGTH_LONG).show();
             Cursor res = ScoutrDb.getAllData();
             StringBuffer buffer = new StringBuffer();
-            while(res.moveToNext()){
-                for (int i=0;i<10;i++){
+            while (res.moveToNext()) {
+                for (int i = 0; i < 10; i++) {
                     buffer.append(res.getString(i) + "\n");
                 }
             }
@@ -280,8 +281,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     Cursor res = ScoutrDb.getAllData();
                     marker.getPosition();
 
-                    while(res.moveToNext()){
-                        if(res.getString(0).equals(marker.getPosition().toString())){
+                    while (res.moveToNext()) {
+                        if (res.getString(0).equals(marker.getPosition().toString())) {
                             Toast.makeText(MainActivity.this, res.getString(0), Toast.LENGTH_SHORT).show();
                             break;
                         }

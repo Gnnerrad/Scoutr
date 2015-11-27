@@ -1,3 +1,5 @@
+//This class allows the uses to input some meta data about the location of the photo
+
 package com.example.darre_000.scoutr;
 
 import android.app.Activity;
@@ -45,6 +47,7 @@ public class CheckBoxActivity extends AppCompatActivity {
         }
     }
 
+    //once the add location button is press all the relivent data is added to the intent and returned
     public void addListenerOnButton() {
 
         final EditText textBox = (EditText) findViewById(R.id.checkBoxTextField);

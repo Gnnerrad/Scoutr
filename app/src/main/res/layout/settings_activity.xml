@@ -79,12 +79,11 @@
                 android:layout_height="wrap_content"
                 android:text="Clear Favourites" />
         </LinearLayout>
-        <!--<Button-->
-            <!--android:layout_above="@id/menu3"-->
-            <!--android:layout_alignParentBottom="true"-->
-            <!--android:layout_alignParentRight="true"-->
-            <!--android:layout_width="fill_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="Save Settings."/>-->
+        <Button
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Save Settings."/>
     </LinearLayout>
 </LinearLayout>
