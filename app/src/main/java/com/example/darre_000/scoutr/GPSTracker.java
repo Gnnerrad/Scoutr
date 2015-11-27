@@ -18,6 +18,11 @@ import android.provider.Settings;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
+// Used the following link as the basis for building this
+// class link can be found at : http://blog.teamtreehouse.com/beginners-guide-location-android
+// Finds current location, update location is not necessary due to the apps
+// specifications.
+
 public class GPSTracker extends Service implements LocationListener {
 
 	private final Context context;

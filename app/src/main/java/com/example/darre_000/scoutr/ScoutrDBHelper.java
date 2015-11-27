@@ -5,7 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-
+//talks to the SQLite database and adds data according to the schema
 public class ScoutrDBHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "scoutr.db";
     public static final String TABLE_NAME = "location_table";
@@ -26,9 +26,6 @@ public class ScoutrDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-//        db.execSQL("create table " + TABLE_NAME + " (ID INTEGER PRIMARY KEY," +
-//                "NAME TEXT,LAT TEXT,LONG TEXT,WC BOOLEAN,WIFI BOOLEAN,POWER BOOLEAN" +
-//                "ACCESSIBILITY BOOLEAN,SUNLIGHT BOOLEAN)");
         db.execSQL("create table " + TABLE_NAME + " (ID TEXT PRIMARY KEY," +
                                                     "NAME TEXT," +
                                                     "LAT TEXT," +

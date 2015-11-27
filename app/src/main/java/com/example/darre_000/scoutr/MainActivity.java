@@ -1,5 +1,10 @@
 package com.example.darre_000.scoutr;
 
+// This is the main activity it handles all of the apps main functionality.
+// It consists of a map fragment on which everything is built, an object that
+// adds to the database, numerous click listeners that query the database and
+// update values accordingly.
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
@@ -44,7 +49,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     String currentLocationPhotoName;
     SearchView searchBar;
 
-
+    //sets up environment for app. Search bar listener, sets up database,
+    //sets up markers etc.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -163,7 +169,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             startActivity(settings);
         }
     };
-
+    // camera listener for camera button press also get values return from gps tracker
     private View.OnClickListener camListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -199,7 +205,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             takeLocationPhoto(v);
         }
     };
-
+    // self
     private void takeLocationPhoto(View v) {
         gps = new GPSTracker(MainActivity.this);
         Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
@@ -217,7 +223,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
         startActivityForResult(intent, 1);
     }
-
+    //handles the return values of an activity
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(resultCode, resultCode, intent);
 
@@ -266,7 +272,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void onMapReady(GoogleMap googleMap) {
     }
-
+    // adds marker to map fragment with meta data
     protected void addMarkerForPicture(boolean wcBool, boolean wifiBool, boolean powerBool, boolean accessBool, boolean sunBool, String markerTitle) {
         if (gps.canGetLocation) {
             LatLng currentLocation = new LatLng(gps.getLatitude(), gps.getLongitude());
