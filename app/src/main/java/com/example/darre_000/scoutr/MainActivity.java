@@ -67,7 +67,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                                 .build();
                         CameraUpdate camUpd3 = CameraUpdateFactory.newCameraPosition(camPos);
                         mMap.animateCamera(camUpd3);
-
                         break;
                     }
                 }
@@ -76,6 +75,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                onQueryTextSubmit(newText);
                 return false;
             }
         });
