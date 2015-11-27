@@ -45,7 +45,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+//        Intent loadingScreen = new Intent(this, LoadingScreenActivity.class);
+//        startActivity(loadingScreen);
 
 //        ScoutrDBHelper dbHelper = new ScoutrDBHelper(getApplicationContext());
 //        SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -109,7 +110,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     Bitmap resized = Bitmap.createScaledBitmap(bitmap, 1920, 1080, true);
                     locationPhoto.setImageBitmap(resized);
                 } catch (Exception e) {
-//                    locationPhoto.setImageURI(imageUri);
+                    locationPhoto.setImageURI(imageUri);
                 }
                 return v;
             }
@@ -225,11 +226,13 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 photoCheckbox.putExtra("imageUri", imageUri.toString());
                 startActivityForResult(photoCheckbox, 2);
             } else if (requestCode == 2) {
-                addMarkerForPicture(intent.getExtras().getBoolean("wcChk"),
-                        intent.getExtras().getBoolean("wifiChk"),
-                        intent.getExtras().getBoolean("powerChk"),
-                        intent.getExtras().getBoolean("accessChk"),
-                        intent.getExtras().getBoolean("sunChk"));
+                boolean wcBool = intent.getExtras().getBoolean("wcChk"),
+                        wifiBool = intent.getExtras().getBoolean("wifiChk"),
+                        powerBool = intent.getExtras().getBoolean("powerChk"),
+                        accesBool = intent.getExtras().getBoolean("accessChk"),
+                        sunBool = intent.getExtras().getBoolean("sunChk");
+
+                addMarkerForPicture(wcBool, wifiBool, powerBool, accesBool, sunBool);
             }
         }
     }
