@@ -13,17 +13,21 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentActivity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.SearchView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -38,6 +42,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     Bitmap bitmap;
     ScoutrDBHelper ScoutrDb;
     String currentLocationPhotoName;
+    SearchView searchBar;
 
 
     @Override
@@ -46,7 +51,34 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_main);
         ScoutrDb = new ScoutrDBHelper(this);
 
+        searchBar = (SearchView) findViewById(R.id.searchView);
+        searchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Cursor res = ScoutrDb.getAllData();
 
+                while(res.moveToNext()){
+                    if(res.getString(1).equals(query)){
+                        double lat = Double.parseDouble(res.getString(2));
+                        double lng = Double.parseDouble(res.getString(3));
+                        CameraPosition camPos = new CameraPosition.Builder()
+                                .target(new LatLng(lat, lng))
+                                .zoom(18)
+                                .build();
+                        CameraUpdate camUpd3 = CameraUpdateFactory.newCameraPosition(camPos);
+                        mMap.animateCamera(camUpd3);
+
+                        break;
+                    }
+                }
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
