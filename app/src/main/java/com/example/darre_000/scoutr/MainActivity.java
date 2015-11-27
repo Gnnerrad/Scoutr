@@ -3,10 +3,8 @@ package com.example.darre_000.scoutr;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,7 +18,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -62,7 +60,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 //                null,
 //                values
 //        );
-
 
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -166,7 +163,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
         startActivityForResult(intent, 1);
 
-        popupImgMap.put("m"+imageCount, photoName);
+        popupImgMap.put("m" + imageCount, photoName);
         Log.d(Integer.toString(imageCount), "SPOCK");
     }
 
@@ -191,38 +188,40 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 Intent photoCheckbox = new Intent(this, CheckBoxActivity.class);
                 photoCheckbox.putExtra("imageUri", imageUri.toString());
                 startActivityForResult(photoCheckbox, 2);
-            }
-            else if(requestCode == 2) {
-                if (intent.getExtras() != null) {
-                    if(intent.getExtras().getBoolean("wcChk")){
-                        ImageView wc = (ImageView) findViewById(R.id.popupTolietIcon);
-                        wc.setBackgroundResource(R.drawable.wc_icon);
-                    }
-                    if(intent.getExtras().getBoolean("wifiChk")){
-                        ImageView wifi = (ImageView) findViewById(R.id.popupWifiIcon);
-                        wifi.setBackgroundResource(R.drawable.wifi_icon);
-                    }
-                    if(intent.getExtras().getBoolean("powerChk")){
-                        ImageView power = (ImageView) findViewById(R.id.popupPowerIcon);
-                        power.setBackgroundResource(R.drawable.power_icon);
-                    }
-                    if(intent.getExtras().getBoolean("accessCheck")){
-                        ImageView access = (ImageView) findViewById(R.id.popupAccesibilityIcon);
-                        access.setBackgroundResource(R.drawable.accessibility_icon);
-                    }
-                    if(intent.getExtras().getBoolean("sunCheck")){
-                        ImageView sun = (ImageView) findViewById(R.id.popupSunIcon);
-                        sun.setBackgroundResource(R.drawable.weather_icon);
-                    }
-                    addMarkerForPicture(intent.getExtras().getBoolean("wcChk"),
-                            intent.getExtras().getBoolean("wifiChk"),
-                            intent.getExtras().getBoolean("powerChk"),
-                            intent.getExtras().getBoolean("accessChk"),
-                            intent.getExtras().getBoolean("sunChk"));
+            } else if (requestCode == 2) {
+                if (!gps.canGetLocation) {
+                    DialogInterface.OnClickListener enableGpsClickListener = new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            switch (which) {
+                                case DialogInterface.BUTTON_POSITIVE:
+                                    Intent gpsOptionsIntent = new Intent(
+                                            android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                    startActivity(gpsOptionsIntent);
+                                    break;
+
+                                case DialogInterface.BUTTON_NEGATIVE:
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                                    builder.setMessage("No pin will be dropped as your location services cannot be accessed.")
+                                            .setNeutralButton("Dismiss", new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    dialog.dismiss();
+                                                }
+                                            }).show();
+                                    break;
+                            }
+                        }
+                    };
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setMessage("Location services must be enabled to drop a new pin.\nWould you like to enable location services now?")
+                            .setPositiveButton("Yes", enableGpsClickListener)
+                            .setNegativeButton("No", enableGpsClickListener).show();
                 }
-                else{
-                    Toast.makeText(MainActivity.this, "checkBox Intent is null", Toast.LENGTH_SHORT).show();
-                }
+                addMarkerForPicture(intent.getExtras().getBoolean("wcChk"),
+                        intent.getExtras().getBoolean("wifiChk"),
+                        intent.getExtras().getBoolean("powerChk"),
+                        intent.getExtras().getBoolean("accessChk"),
+                        intent.getExtras().getBoolean("sunChk"));
             }
         }
     }
@@ -247,7 +246,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                 @Override
                 public boolean onMarkerClick(Marker marker) {
-                    Log.d(popupImgMap.get(marker.getId()),marker.getId());
+                    Log.d(popupImgMap.get(marker.getId()), marker.getId());
 
                     String photoName = popupImgMap.get(marker.getId());
                     File photo = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), photoName);
@@ -258,33 +257,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 }
             });
             imageCount++;
-            Log.d(popupImgMap.toString(), "\naijshdfl;kasjdklfjalkjdsklajslkdfjs");
-        } else {
-            //The alert popup idea comes from the second response of http://stackoverflow.com/questions/2478517/how-to-display-a-yes-no-dialog-box-in-android
-            DialogInterface.OnClickListener enableGpsClickListener = new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    switch (which) {
-                        case DialogInterface.BUTTON_POSITIVE:
-                            Intent gpsOptionsIntent = new Intent(
-                                    android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                            startActivity(gpsOptionsIntent);
-                            //addMarkerForPicture();
-                            break;
-
-                        case DialogInterface.BUTTON_NEGATIVE:
-                            //No button clicked
-                            break;
-                    }
-                }
-            };
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("Location services must be enabled to drop a new pin.\nWould you like to enable location services now?")
-                    .setPositiveButton("Yes", enableGpsClickListener)
-                    .setNegativeButton("No", enableGpsClickListener).show();
-
-            addMarkerForPicture(wcBool, wifiBool, powerBool, accessBool, sunBool);
         }
     }
 }

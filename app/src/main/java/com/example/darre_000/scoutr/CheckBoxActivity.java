@@ -13,6 +13,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 public class CheckBoxActivity extends AppCompatActivity {
 
@@ -31,19 +32,17 @@ public class CheckBoxActivity extends AppCompatActivity {
                 getContentResolver().notifyChange(chosenImage, null);
                 ImageView imageView = (ImageView) findViewById(R.id.checklistPhoto);
                 ContentResolver cr = getContentResolver();
-                try {
-                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(cr, chosenImage);
-                    Bitmap resized = Bitmap.createScaledBitmap(bitmap, 240, 135, true);
-                    imageView.setImageBitmap(resized);
-                } catch (Exception e) {}
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(cr, chosenImage);
+                Bitmap resized = Bitmap.createScaledBitmap(bitmap, 240, 135, true);
+                imageView.setImageBitmap(resized);
                 addListenerOnButton();
-            } catch (Exception e) {
-            }
+            } catch (Exception e) {}
         }
     }
 
     public void addListenerOnButton() {
 
+        TextView textBox = (TextView) findViewById(R.id.checkBoxTextField);
         chk1 = (CheckBox) findViewById(R.id.checklistWc);
         chk2 = (CheckBox) findViewById(R.id.checklistWifi);
         chk3 = (CheckBox) findViewById(R.id.checklistPower);
