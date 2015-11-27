@@ -24,7 +24,7 @@
         android:orientation="vertical">
 
         <EditText
-            android:id="@+id/enter_location"
+            android:id="@+id/checkBoxTextField"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"

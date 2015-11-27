@@ -34,6 +34,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.io.File;
 import java.util.HashMap;
 
+
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback {
     private GoogleMap mMap;
     private GPSTracker gps;
@@ -94,7 +95,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public View getInfoContents(Marker marker) {
                 String booleans[] = marker.getSnippet().split(" ");
-
                 View v = getLayoutInflater().inflate(R.layout.custom_info_window, null);
                 if (booleans[0].equals("true")) {
                     ImageView wc = (ImageView) v.findViewById(R.id.popupTolietIcon);
@@ -119,7 +119,15 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 TextView lat = (TextView) v.findViewById(R.id.latlng);
                 lat.setText(imageUri.toString());
                 ImageView locationPhoto = (ImageView) v.findViewById(R.id.locationPhoto);
-                locationPhoto.setImageURI(imageUri);
+                try {
+                    getContentResolver().notifyChange(imageUri, null);
+                    ContentResolver cr = getContentResolver();
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(cr, imageUri);
+                    Bitmap resized = Bitmap.createScaledBitmap(bitmap, 1920, 1080, true);
+                    locationPhoto.setImageBitmap(resized);
+                } catch (Exception e) {
+                    locationPhoto.setImageURI(imageUri);
+                }
                 return v;
             }
         });
@@ -159,6 +167,35 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     private View.OnClickListener camListener = new View.OnClickListener() {
         public void onClick(View v) {
+            gps = new GPSTracker(MainActivity.this);
+            if (!gps.canGetLocation) {
+                DialogInterface.OnClickListener enableGpsClickListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case DialogInterface.BUTTON_POSITIVE:
+                                Intent gpsOptionsIntent = new Intent(
+                                        android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                startActivity(gpsOptionsIntent);
+                                break;
+
+                            case DialogInterface.BUTTON_NEGATIVE:
+                                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                                builder.setMessage("No pin will be dropped as your location services cannot be accessed.")
+                                        .setNeutralButton("Dismiss", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
+                                            }
+                                        }).show();
+                                break;
+                        }
+                    }
+                };
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setMessage("Location services must be enabled to drop a new pin.\nWould you like to enable location services now?")
+                        .setPositiveButton("Yes", enableGpsClickListener)
+                        .setNegativeButton("No", enableGpsClickListener).show();
+            }
             takeLocationPhoto(v);
         }
     };
@@ -180,7 +217,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
         startActivityForResult(intent, 1);
 
-        popupImgMap.put("m"+imageCount, photoName);
+        popupImgMap.put("m" + imageCount, photoName);
         Log.d(Integer.toString(imageCount), "SPOCK");
     }
 
@@ -205,42 +242,45 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 Intent photoCheckbox = new Intent(this, CheckBoxActivity.class);
                 photoCheckbox.putExtra("imageUri", imageUri.toString());
                 startActivityForResult(photoCheckbox, 2);
+            } else if (requestCode == 2) {
+                boolean wcBool = intent.getExtras().getBoolean("wcChk"),
+                        wifiBool = intent.getExtras().getBoolean("wifiChk"),
+                        powerBool = intent.getExtras().getBoolean("powerChk"),
+                        accesBool = intent.getExtras().getBoolean("accessChk"),
+                        sunBool = intent.getExtras().getBoolean("sunChk");
+
+                addMarkerForPicture(wcBool, wifiBool, powerBool, accesBool, sunBool);
             }
             else if(requestCode == 2) {
                 if (intent.getExtras() != null) {
-
-                    //This code is actually redundant. pull to get newer version
-
-
-
-//                    if(intent.getExtras().getBoolean("wcChk")){
-//                        ImageView wc = (ImageView) findViewById(R.id.popupTolietIcon);
-//                        wc.setBackgroundResource(R.drawable.wc_icon);
-//                    }
-//                    if(intent.getExtras().getBoolean("wifiChk")){
-//                        ImageView wifi = (ImageView) findViewById(R.id.popupWifiIcon);
-//                        wifi.setBackgroundResource(R.drawable.wifi_icon);
-//                    }
-//                    if(intent.getExtras().getBoolean("powerChk")){
-//                        ImageView power = (ImageView) findViewById(R.id.popupPowerIcon);
-//                        power.setBackgroundResource(R.drawable.power_icon);
-//                    }
-//                    if(intent.getExtras().getBoolean("accessCheck")){
-//                        ImageView access = (ImageView) findViewById(R.id.popupAccesibilityIcon);
-//                        access.setBackgroundResource(R.drawable.accessibility_icon);
-//                    }
-//                    if(intent.getExtras().getBoolean("sunCheck")){
-//                        ImageView sun = (ImageView) findViewById(R.id.popupSunIcon);
-//                        sun.setBackgroundResource(R.drawable.weather_icon);
-//                    }
+                    if(intent.getExtras().getBoolean("wcChk")){
+                        ImageView wc = (ImageView) findViewById(R.id.popupTolietIcon);
+                        wc.setBackgroundResource(R.drawable.wc_icon);
+                    }
+                    if(intent.getExtras().getBoolean("wifiChk")){
+                        ImageView wifi = (ImageView) findViewById(R.id.popupWifiIcon);
+                        wifi.setBackgroundResource(R.drawable.wifi_icon);
+                    }
+                    if(intent.getExtras().getBoolean("powerChk")){
+                        ImageView power = (ImageView) findViewById(R.id.popupPowerIcon);
+                        power.setBackgroundResource(R.drawable.power_icon);
+                    }
+                    if(intent.getExtras().getBoolean("accessCheck")){
+                        ImageView access = (ImageView) findViewById(R.id.popupAccesibilityIcon);
+                        access.setBackgroundResource(R.drawable.accessibility_icon);
+                    }
+                    if(intent.getExtras().getBoolean("sunCheck")){
+                        ImageView sun = (ImageView) findViewById(R.id.popupSunIcon);
+                        sun.setBackgroundResource(R.drawable.weather_icon);
+                    }
                     addMarkerForPicture(intent.getExtras().getBoolean("wcChk"),
                             intent.getExtras().getBoolean("wifiChk"),
                             intent.getExtras().getBoolean("powerChk"),
                             intent.getExtras().getBoolean("accessChk"),
                             intent.getExtras().getBoolean("sunChk"));
-//                }
-//                else{
-//                    Toast.makeText(MainActivity.this, "checkBox Intent is null", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    Toast.makeText(MainActivity.this, "checkBox Intent is null", Toast.LENGTH_SHORT).show();
                 }
             }
         }
