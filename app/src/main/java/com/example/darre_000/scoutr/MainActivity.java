@@ -181,8 +181,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         Long tsLong = System.currentTimeMillis() / 1000;
         String ts = tsLong.toString();
 
-        String photoName = Double.toString(gps.getLongitude()) +
-                "_" + Double.toString(gps.getLatitude()) + "_" + imageCount + ".jpg";
+        currentLocationPhotoName = Double.toString(gps.getLongitude()) +
+                "_" + Double.toString(gps.getLatitude())+ ".jpg";
 
 
         File photo = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), currentLocationPhotoName);
@@ -190,9 +190,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         imageUri = Uri.fromFile(photo);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
         startActivityForResult(intent, 1);
-
-        popupImgMap.put("m" + imageCount, photoName);
-        Log.d(Integer.toString(imageCount), "SPOCK");
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -228,6 +225,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 }
                 else if(intent.getExtras().getString("popUpTitle").equals("")) {
                     Toast.makeText(MainActivity.this, "result Empty", Toast.LENGTH_LONG).show();
+                    Intent photoCheckbox = new Intent(this, CheckBoxActivity.class);
+                    photoCheckbox.putExtra("imageUri", imageUri.toString());
+                    startActivityForResult(photoCheckbox, 2);
                 } else {
                       String markerTitle = intent.getExtras().getString("popUpTitle");
                     Toast.makeText(MainActivity.this, markerTitle, Toast.LENGTH_SHORT).show();
@@ -246,7 +246,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             LatLng currentLocation = new LatLng(gps.getLatitude(), gps.getLongitude());
             mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
             mMap.moveCamera(CameraUpdateFactory.zoomIn());
-            mMap.addMarker(new MarkerOptions()
+            Marker marker = mMap.addMarker(new MarkerOptions()
                             .title(markerTitle)
                             .position(currentLocation)
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin))
@@ -328,7 +328,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     .setPositiveButton("Yes", enableGpsClickListener)
                     .setNegativeButton("No", enableGpsClickListener).show();
 
-            addMarkerForPicture(wcBool, wifiBool, powerBool, accessBool, sunBool);
         }
     }
 }
