@@ -7,7 +7,8 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="If we had any setting they would go here.\n Instead enjoy this lama."/>
+        android:layout_gravity="center_horizontal"
+        android:text="Scoutr"/>
 
     <ImageView
         android:layout_width="wrap_content"

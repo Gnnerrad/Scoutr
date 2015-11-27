@@ -3,11 +3,9 @@ package com.example.darre_000.scoutr;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,13 +13,12 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -32,7 +29,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.File;
-import java.util.HashMap;
 
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -88,8 +84,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     ImageView sun = (ImageView) v.findViewById(R.id.popupSunIcon);
                     sun.setImageURI(Uri.parse("android.resource://com.example.darre_000.scoutr/drawable/weather_icon"));
                 }
-                TextView lat = (TextView) v.findViewById(R.id.latlng);
-                lat.setText(imageUri.toString());
                 ImageView locationPhoto = (ImageView) v.findViewById(R.id.locationPhoto);
                 try {
                     getContentResolver().notifyChange(imageUri, null);
@@ -265,7 +259,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     Boolean.toString(sunBool),
                     currentLocationPhotoName);
 
-
             if(isInserted)
                 Toast.makeText(this,"Data inserted", Toast.LENGTH_LONG).show();
             Cursor res = ScoutrDb.getAllData();
@@ -275,7 +268,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     buffer.append(res.getString(i) + "\n");
                 }
             }
-
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setCancelable(true);
@@ -327,8 +319,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             builder.setMessage("Location services must be enabled to drop a new pin.\nWould you like to enable location services now?")
                     .setPositiveButton("Yes", enableGpsClickListener)
                     .setNegativeButton("No", enableGpsClickListener).show();
-
         }
     }
 }
-
