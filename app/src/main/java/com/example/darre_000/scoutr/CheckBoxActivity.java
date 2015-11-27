@@ -33,7 +33,7 @@ public class CheckBoxActivity extends AppCompatActivity {
                 ImageView imageView = (ImageView) findViewById(R.id.checklistPhoto);
                 ContentResolver cr = getContentResolver();
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(cr, chosenImage);
-                Bitmap resized = Bitmap.createScaledBitmap(bitmap, 240, 135, true);
+                Bitmap resized = Bitmap.createScaledBitmap(bitmap, 1920, 1080, true);
                 imageView.setImageBitmap(resized);
                 addListenerOnButton();
             } catch (Exception e) {}

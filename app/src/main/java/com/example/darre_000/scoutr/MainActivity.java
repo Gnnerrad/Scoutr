@@ -102,7 +102,15 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 TextView lat = (TextView) v.findViewById(R.id.latlng);
                 lat.setText(imageUri.toString());
                 ImageView locationPhoto = (ImageView) v.findViewById(R.id.locationPhoto);
-                locationPhoto.setImageURI(imageUri);
+                try {
+                    getContentResolver().notifyChange(imageUri, null);
+                    ContentResolver cr = getContentResolver();
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(cr, imageUri);
+                    Bitmap resized = Bitmap.createScaledBitmap(bitmap, 1920, 1080, true);
+                    locationPhoto.setImageBitmap(resized);
+                } catch (Exception e) {
+//                    locationPhoto.setImageURI(imageUri);
+                }
                 return v;
             }
         });
@@ -142,12 +150,40 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     private View.OnClickListener camListener = new View.OnClickListener() {
         public void onClick(View v) {
+            gps = new GPSTracker(MainActivity.this);
+            if (!gps.canGetLocation) {
+                DialogInterface.OnClickListener enableGpsClickListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case DialogInterface.BUTTON_POSITIVE:
+                                Intent gpsOptionsIntent = new Intent(
+                                        android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                startActivity(gpsOptionsIntent);
+                                break;
+
+                            case DialogInterface.BUTTON_NEGATIVE:
+                                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                                builder.setMessage("No pin will be dropped as your location services cannot be accessed.")
+                                        .setNeutralButton("Dismiss", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
+                                            }
+                                        }).show();
+                                break;
+                        }
+                    }
+                };
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setMessage("Location services must be enabled to drop a new pin.\nWould you like to enable location services now?")
+                        .setPositiveButton("Yes", enableGpsClickListener)
+                        .setNegativeButton("No", enableGpsClickListener).show();
+            }
             takeLocationPhoto(v);
         }
     };
 
     private void takeLocationPhoto(View v) {
-        gps = new GPSTracker(MainActivity.this);
         Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
 
         Long tsLong = System.currentTimeMillis() / 1000;
@@ -189,34 +225,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 photoCheckbox.putExtra("imageUri", imageUri.toString());
                 startActivityForResult(photoCheckbox, 2);
             } else if (requestCode == 2) {
-                if (!gps.canGetLocation) {
-                    DialogInterface.OnClickListener enableGpsClickListener = new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            switch (which) {
-                                case DialogInterface.BUTTON_POSITIVE:
-                                    Intent gpsOptionsIntent = new Intent(
-                                            android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                                    startActivity(gpsOptionsIntent);
-                                    break;
-
-                                case DialogInterface.BUTTON_NEGATIVE:
-                                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                                    builder.setMessage("No pin will be dropped as your location services cannot be accessed.")
-                                            .setNeutralButton("Dismiss", new DialogInterface.OnClickListener() {
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                    dialog.dismiss();
-                                                }
-                                            }).show();
-                                    break;
-                            }
-                        }
-                    };
-                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setMessage("Location services must be enabled to drop a new pin.\nWould you like to enable location services now?")
-                            .setPositiveButton("Yes", enableGpsClickListener)
-                            .setNegativeButton("No", enableGpsClickListener).show();
-                }
                 addMarkerForPicture(intent.getExtras().getBoolean("wcChk"),
                         intent.getExtras().getBoolean("wifiChk"),
                         intent.getExtras().getBoolean("powerChk"),
@@ -236,12 +244,10 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
             mMap.moveCamera(CameraUpdateFactory.zoomIn());
             Marker marker = mMap.addMarker(new MarkerOptions()
-                            .title("King Charles")
                             .position(currentLocation)
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin))
                             .snippet(wcBool + " " + wifiBool + " " + powerBool + " " + accessBool + " " + sunBool)
             );
-            //marker.showInfoWindow();
 
             mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                 @Override
@@ -251,7 +257,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     String photoName = popupImgMap.get(marker.getId());
                     File photo = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), photoName);
                     imageUri = Uri.fromFile(photo);
-
                     marker.showInfoWindow();
                     return true;
                 }
