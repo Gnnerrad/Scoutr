@@ -39,26 +39,15 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     private HashMap<String, String> popupImgMap = new HashMap<>();
     private int imageCount;
     Bitmap bitmap;
+    ScoutrDBHelper ScoutrDb;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ScoutrDb = new ScoutrDBHelper(this);
 
-//        ScoutrDBHelper dbHelper = new ScoutrDBHelper(getApplicationContext());
-//        SQLiteDatabase db = dbHelper.getWritableDatabase();
-//
-//        ContentValues values = new ContentValues();
-//        values.put(ScoutrDBContract.Table.LATITUDE, "234234534");
-//        values.put(ScoutrDBContract.Table.LONGITUDE, "23545645");
-//
-//        long newRowId;
-//        newRowId = db.insert(
-//                ScoutrDBContract.Table.TABLE_NAME,
-//                null,
-//                values
-//        );
 
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -247,16 +236,49 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             LatLng currentLocation = new LatLng(gps.getLatitude(), gps.getLongitude());
             mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
             mMap.moveCamera(CameraUpdateFactory.zoomIn());
-            Marker marker = mMap.addMarker(new MarkerOptions()
+            mMap.addMarker(new MarkerOptions()
                             .position(currentLocation)
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin))
                             .snippet(wcBool + " " + wifiBool + " " + powerBool + " " + accessBool + " " + sunBool)
             );
+            //marker.showInfoWindow();
+            boolean isInserted = ScoutrDb.insertData(
+                    Integer.toString(imageCount),
+                    "location name",
+                    Double.toString(currentLocation.latitude),
+                    Double.toString(currentLocation.longitude),
+                    Boolean.toString(wcBool),
+                    Boolean.toString(wifiBool),
+                    Boolean.toString(powerBool),
+                    Boolean.toString(accessBool),
+                    Boolean.toString(sunBool));
 
+
+            if(isInserted)
+                Toast.makeText(this,"Data inserted", Toast.LENGTH_LONG).show();
+            Cursor res = ScoutrDb.getAllData();
+            StringBuffer buffer = new StringBuffer();
+            while(res.moveToNext()){
+                buffer.append(res.getString(0) + "\n");
+                buffer.append(res.getString(1) + "\n");
+                buffer.append(res.getString(2) + "\n");
+                buffer.append(res.getString(3) + "\n");
+                buffer.append(res.getString(4) + "\n");
+                buffer.append(res.getString(5) + "\n");
+                buffer.append(res.getString(6) + "\n");
+                buffer.append(res.getString(7) + "\n");
+                buffer.append(res.getString(8) + "\n");
+            }
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setCancelable(true);
+            builder.setTitle("ALL DATA");
+            builder.setMessage(buffer.toString());
+            builder.show();
             mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                 @Override
                 public boolean onMarkerClick(Marker marker) {
-                    Log.d(popupImgMap.get(marker.getId()), marker.getId());
+                    Log.d(popupImgMap.get(marker.getId()),marker.getId());
 
                     String photoName = popupImgMap.get(marker.getId());
                     File photo = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), photoName);
