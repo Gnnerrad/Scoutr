@@ -1,3 +1,5 @@
+//Bacis layout of the settings page for future development
+
 package com.example.darre_000.scoutr;
 
 import android.app.AlertDialog;

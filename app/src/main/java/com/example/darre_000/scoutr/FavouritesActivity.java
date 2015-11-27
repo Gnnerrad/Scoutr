@@ -1,3 +1,5 @@
+//Basic Layout for Favourites for future development
+
 package com.example.darre_000.scoutr;
 
 import android.app.AlertDialog;
