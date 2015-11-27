@@ -45,8 +45,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        Intent loadingScreen = new Intent(this, LoadingScreenActivity.class);
-//        startActivity(loadingScreen);
 
 //        ScoutrDBHelper dbHelper = new ScoutrDBHelper(getApplicationContext());
 //        SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -140,16 +138,18 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
         ImageButton menu = (ImageButton) findViewById(R.id.bottomMenuButton);
-        menu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "A menu", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        menu.setOnClickListener(settingListener);
     }
+    private View.OnClickListener settingListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent settings = new Intent(MainActivity.this, SettingsActivity.class);
+            startActivity(settings);
+        }
+    };
 
     private View.OnClickListener camListener = new View.OnClickListener() {
+        @Override
         public void onClick(View v) {
             gps = new GPSTracker(MainActivity.this);
             if (!gps.canGetLocation) {
@@ -225,7 +225,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 Intent photoCheckbox = new Intent(this, CheckBoxActivity.class);
                 photoCheckbox.putExtra("imageUri", imageUri.toString());
                 startActivityForResult(photoCheckbox, 2);
-            } else if (requestCode == 2) {
+            }
+            else if (requestCode == 2) {
                 boolean wcBool = intent.getExtras().getBoolean("wcChk"),
                         wifiBool = intent.getExtras().getBoolean("wifiChk"),
                         powerBool = intent.getExtras().getBoolean("powerChk"),
