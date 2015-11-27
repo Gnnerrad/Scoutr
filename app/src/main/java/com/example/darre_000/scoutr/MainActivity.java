@@ -314,7 +314,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
                     while(res.moveToNext()){
                         if(res.getString(0).equals(marker.getPosition().toString())){
-                            Toast.makeText(MainActivity.this, res.getString(0), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, res.getString(1), Toast.LENGTH_SHORT).show();
                             break;
                         }
                     }
