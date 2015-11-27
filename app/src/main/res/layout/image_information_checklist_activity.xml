@@ -29,8 +29,11 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:inputType="textCapWords"
+            android:hint="Photo Name"
+            android:ems="10"
             android:textSize="20sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            android:imeOptions="actionDone"/>
 
         <CheckBox
             android:id="@+id/checklistWc"

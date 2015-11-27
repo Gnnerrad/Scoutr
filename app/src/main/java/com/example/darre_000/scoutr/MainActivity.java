@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -47,7 +49,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ScoutrDb = new ScoutrDBHelper(this);
-
 
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -104,7 +105,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         });
         mapFragment.getMapAsync(this);
 
-
         ImageButton cameraButton = (ImageButton) findViewById(R.id.cameraButton);
         cameraButton.setOnClickListener(camListener);
 
@@ -129,6 +129,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         ImageButton menu = (ImageButton) findViewById(R.id.bottomMenuButton);
         menu.setOnClickListener(settingListener);
     }
+
     private View.OnClickListener settingListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -182,7 +183,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         String photoName = Double.toString(gps.getLongitude()) +
                 "_" + Double.toString(gps.getLatitude()) + "_" + imageCount + ".jpg";
 
-
         File photo = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), photoName);
 
         imageUri = Uri.fromFile(photo);
@@ -214,80 +214,91 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 Intent photoCheckbox = new Intent(this, CheckBoxActivity.class);
                 photoCheckbox.putExtra("imageUri", imageUri.toString());
                 startActivityForResult(photoCheckbox, 2);
-            }
-            else if (requestCode == 2) {
+            } else if (requestCode == 2) {
                 boolean wcBool = intent.getExtras().getBoolean("wcChk"),
                         wifiBool = intent.getExtras().getBoolean("wifiChk"),
                         powerBool = intent.getExtras().getBoolean("powerChk"),
                         accesBool = intent.getExtras().getBoolean("accessChk"),
                         sunBool = intent.getExtras().getBoolean("sunChk");
 
-                addMarkerForPicture(wcBool, wifiBool, powerBool, accesBool, sunBool);
+                if (intent.getExtras().getString("popUpTitle") == null){
+                    Toast.makeText(MainActivity.this, "null", Toast.LENGTH_LONG).show();
+                }
+                else if(intent.getExtras().getString("popUpTitle").equals("")) {
+                    Toast.makeText(MainActivity.this, "result Empty", Toast.LENGTH_LONG).show();
+                } else {
+                      String markerTitle = intent.getExtras().getString("popUpTitle");
+                    Toast.makeText(MainActivity.this, markerTitle, Toast.LENGTH_SHORT).show();
+                    addMarkerForPicture(wcBool, wifiBool, powerBool, accesBool, sunBool, markerTitle);
+                }
             }
         }
     }
 
-
     public void onMapReady(GoogleMap googleMap) {
     }
 
-    protected void addMarkerForPicture(boolean wcBool, boolean wifiBool, boolean powerBool, boolean accessBool, boolean sunBool) {
+    protected void addMarkerForPicture(boolean wcBool, boolean wifiBool, boolean powerBool, boolean accessBool, boolean sunBool, String markerTitle) {
         if (gps.canGetLocation) {
             LatLng currentLocation = new LatLng(gps.getLatitude(), gps.getLongitude());
             mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
             mMap.moveCamera(CameraUpdateFactory.zoomIn());
             mMap.addMarker(new MarkerOptions()
+                            .title(markerTitle)
                             .position(currentLocation)
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin))
                             .snippet(wcBool + " " + wifiBool + " " + powerBool + " " + accessBool + " " + sunBool)
             );
-            //marker.showInfoWindow();
-            boolean isInserted = ScoutrDb.insertData(
-                    Integer.toString(imageCount),
-                    "location name",
-                    Double.toString(currentLocation.latitude),
-                    Double.toString(currentLocation.longitude),
-                    Boolean.toString(wcBool),
-                    Boolean.toString(wifiBool),
-                    Boolean.toString(powerBool),
-                    Boolean.toString(accessBool),
-                    Boolean.toString(sunBool));
+            if (markerTitle.equals("")) {
+                Toast.makeText(MainActivity.this, "addMarker markerTitle is blank", Toast.LENGTH_SHORT).show();
+            } else {
 
+                boolean isInserted = ScoutrDb.insertData(
+                        Integer.toString(imageCount),
+                        markerTitle,
+                        Double.toString(currentLocation.latitude),
+                        Double.toString(currentLocation.longitude),
+                        Boolean.toString(wcBool),
+                        Boolean.toString(wifiBool),
+                        Boolean.toString(powerBool),
+                        Boolean.toString(accessBool),
+                        Boolean.toString(sunBool));
 
-            if(isInserted)
-                Toast.makeText(this,"Data inserted", Toast.LENGTH_LONG).show();
-            Cursor res = ScoutrDb.getAllData();
-            StringBuffer buffer = new StringBuffer();
-            while(res.moveToNext()){
-                buffer.append(res.getString(0) + "\n");
-                buffer.append(res.getString(1) + "\n");
-                buffer.append(res.getString(2) + "\n");
-                buffer.append(res.getString(3) + "\n");
-                buffer.append(res.getString(4) + "\n");
-                buffer.append(res.getString(5) + "\n");
-                buffer.append(res.getString(6) + "\n");
-                buffer.append(res.getString(7) + "\n");
-                buffer.append(res.getString(8) + "\n");
-            }
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setCancelable(true);
-            builder.setTitle("ALL DATA");
-            builder.setMessage(buffer.toString());
-            builder.show();
-            mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-                @Override
-                public boolean onMarkerClick(Marker marker) {
-                    Log.d(popupImgMap.get(marker.getId()),marker.getId());
-
-                    String photoName = popupImgMap.get(marker.getId());
-                    File photo = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), photoName);
-                    imageUri = Uri.fromFile(photo);
-                    marker.showInfoWindow();
-                    return true;
+                if (isInserted)
+                    Toast.makeText(this, "Data inserted", Toast.LENGTH_LONG).show();
+                Cursor res = ScoutrDb.getAllData();
+                StringBuffer buffer = new StringBuffer();
+                while (res.moveToNext()) {
+                    buffer.append(res.getString(0) + "\n");
+                    buffer.append(res.getString(1) + "\n");
+                    buffer.append(res.getString(2) + "\n");
+                    buffer.append(res.getString(3) + "\n");
+                    buffer.append(res.getString(4) + "\n");
+                    buffer.append(res.getString(5) + "\n");
+                    buffer.append(res.getString(6) + "\n");
+                    buffer.append(res.getString(7) + "\n");
+                    buffer.append(res.getString(8) + "\n");
                 }
-            });
-            imageCount++;
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setCancelable(true);
+                builder.setTitle("ALL DATA");
+                builder.setMessage(buffer.toString());
+                builder.show();
+                mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                    @Override
+                    public boolean onMarkerClick(Marker marker) {
+                        Log.d(popupImgMap.get(marker.getId()), marker.getId());
+
+                        String photoName = popupImgMap.get(marker.getId());
+                        File photo = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), photoName);
+                        imageUri = Uri.fromFile(photo);
+                        marker.showInfoWindow();
+                        return true;
+                    }
+                });
+                imageCount++;
+            }
         }
     }
 }
