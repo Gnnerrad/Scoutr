@@ -105,7 +105,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         });
         mapFragment.getMapAsync(this);
 
-
         ImageButton cameraButton = (ImageButton) findViewById(R.id.cameraButton);
         cameraButton.setOnClickListener(camListener);
 
@@ -128,16 +127,19 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
         ImageButton menu = (ImageButton) findViewById(R.id.bottomMenuButton);
-        menu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "A menu", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        menu.setOnClickListener(settingListener);
     }
 
+    private View.OnClickListener settingListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent settings = new Intent(MainActivity.this, SettingsActivity.class);
+            startActivity(settings);
+        }
+    };
+
     private View.OnClickListener camListener = new View.OnClickListener() {
+        @Override
         public void onClick(View v) {
             gps = new GPSTracker(MainActivity.this);
             if (!gps.canGetLocation) {
@@ -179,8 +181,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         Long tsLong = System.currentTimeMillis() / 1000;
         String ts = tsLong.toString();
 
-        currentLocationPhotoName = Double.toString(gps.getLongitude()) +
-                "_" + Double.toString(gps.getLatitude()) + ".jpg";
+        String photoName = Double.toString(gps.getLongitude()) +
+                "_" + Double.toString(gps.getLatitude()) + "_" + imageCount + ".jpg";
 
 
         File photo = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), currentLocationPhotoName);
@@ -189,6 +191,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
         startActivityForResult(intent, 1);
 
+        popupImgMap.put("m" + imageCount, photoName);
+        Log.d(Integer.toString(imageCount), "SPOCK");
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -219,38 +223,15 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                         accesBool = intent.getExtras().getBoolean("accessChk"),
                         sunBool = intent.getExtras().getBoolean("sunChk");
 
-                addMarkerForPicture(wcBool, wifiBool, powerBool, accesBool, sunBool);
-            }
-            else if(requestCode == 2) {
-                if (intent.getExtras() != null) {
-                    if(intent.getExtras().getBoolean("wcChk")){
-                        ImageView wc = (ImageView) findViewById(R.id.popupTolietIcon);
-                        wc.setBackgroundResource(R.drawable.wc_icon);
-                    }
-                    if(intent.getExtras().getBoolean("wifiChk")){
-                        ImageView wifi = (ImageView) findViewById(R.id.popupWifiIcon);
-                        wifi.setBackgroundResource(R.drawable.wifi_icon);
-                    }
-                    if(intent.getExtras().getBoolean("powerChk")){
-                        ImageView power = (ImageView) findViewById(R.id.popupPowerIcon);
-                        power.setBackgroundResource(R.drawable.power_icon);
-                    }
-                    if(intent.getExtras().getBoolean("accessCheck")){
-                        ImageView access = (ImageView) findViewById(R.id.popupAccesibilityIcon);
-                        access.setBackgroundResource(R.drawable.accessibility_icon);
-                    }
-                    if(intent.getExtras().getBoolean("sunCheck")){
-                        ImageView sun = (ImageView) findViewById(R.id.popupSunIcon);
-                        sun.setBackgroundResource(R.drawable.weather_icon);
-                    }
-                    addMarkerForPicture(intent.getExtras().getBoolean("wcChk"),
-                            intent.getExtras().getBoolean("wifiChk"),
-                            intent.getExtras().getBoolean("powerChk"),
-                            intent.getExtras().getBoolean("accessChk"),
-                            intent.getExtras().getBoolean("sunChk"));
+                if (intent.getExtras().getString("popUpTitle") == null){
+                    Toast.makeText(MainActivity.this, "null", Toast.LENGTH_LONG).show();
                 }
-                else{
-                    Toast.makeText(MainActivity.this, "checkBox Intent is null", Toast.LENGTH_SHORT).show();
+                else if(intent.getExtras().getString("popUpTitle").equals("")) {
+                    Toast.makeText(MainActivity.this, "result Empty", Toast.LENGTH_LONG).show();
+                } else {
+                      String markerTitle = intent.getExtras().getString("popUpTitle");
+                    Toast.makeText(MainActivity.this, markerTitle, Toast.LENGTH_SHORT).show();
+                    addMarkerForPicture(wcBool, wifiBool, powerBool, accesBool, sunBool, markerTitle);
                 }
             }
         }
@@ -260,13 +241,13 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
     }
 
-    protected void addMarkerForPicture(boolean wcBool, boolean wifiBool, boolean powerBool, boolean accessBool, boolean sunBool) {
+    protected void addMarkerForPicture(boolean wcBool, boolean wifiBool, boolean powerBool, boolean accessBool, boolean sunBool, String markerTitle) {
         if (gps.canGetLocation) {
-            final LatLng currentLocation = new LatLng(gps.getLatitude(), gps.getLongitude());
+            LatLng currentLocation = new LatLng(gps.getLatitude(), gps.getLongitude());
             mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
             mMap.moveCamera(CameraUpdateFactory.zoomIn());
-            Marker marker = mMap.addMarker(new MarkerOptions()
-                            .title("King Charles")
+            mMap.addMarker(new MarkerOptions()
+                            .title(markerTitle)
                             .position(currentLocation)
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin))
                             .snippet(wcBool + " " + wifiBool + " " + powerBool + " " + accessBool + " " + sunBool)
@@ -274,7 +255,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             //marker.showInfoWindow();
             boolean isInserted = ScoutrDb.insertData(
                     marker.getPosition().toString(),
-                    "location name",
+                    markerTitle,
                     Double.toString(currentLocation.latitude),
                     Double.toString(currentLocation.longitude),
                     Boolean.toString(wcBool),

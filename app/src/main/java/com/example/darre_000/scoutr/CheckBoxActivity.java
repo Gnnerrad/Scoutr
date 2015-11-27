@@ -8,16 +8,21 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class CheckBoxActivity extends AppCompatActivity {
 
     private CheckBox chk1, chk2, chk3, chk4, chk5;
+    String title;
     private Button btnDisplay;
 
     @Override
@@ -42,7 +47,19 @@ public class CheckBoxActivity extends AppCompatActivity {
 
     public void addListenerOnButton() {
 
-        TextView textBox = (TextView) findViewById(R.id.checkBoxTextField);
+        final EditText textBox = (EditText) findViewById(R.id.checkBoxTextField);
+        title = textBox.getText().toString();
+        textBox.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                boolean handled = false;
+                if(actionId == EditorInfo.IME_ACTION_DONE){
+                    title = v.getText().toString();
+                }
+                return handled;
+            }
+        });
+        Toast.makeText(CheckBoxActivity.this, title, Toast.LENGTH_SHORT).show();
         chk1 = (CheckBox) findViewById(R.id.checklistWc);
         chk2 = (CheckBox) findViewById(R.id.checklistWifi);
         chk3 = (CheckBox) findViewById(R.id.checklistPower);
@@ -62,6 +79,7 @@ public class CheckBoxActivity extends AppCompatActivity {
                 intent.putExtra("powerChk", chk3.isChecked());
                 intent.putExtra("accessChk", chk4.isChecked());
                 intent.putExtra("sunChk", chk5.isChecked());
+                intent.putExtra("popUpTitle", title);
                 setResult(Activity.RESULT_OK, intent);
                 finish();
             }
